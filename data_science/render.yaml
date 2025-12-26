@@ -1,0 +1,12 @@
+
+services:
+  - type: web
+    name:  django-app
+    env: python
+    buildCommand: "pip install -r requirement.txt"
+    startCommand: "gunicorn data_science.wsgi:application"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: myproject.settings
+      - key: PYTHON_VERSION
+        value: 3.11
