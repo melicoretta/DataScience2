@@ -266,7 +266,6 @@ $("#submit_subject_id").on("click", function () {
 });
 
 
-
 // slider button
 /*
 const slideValue = document.querySelector("span");
@@ -676,96 +675,100 @@ $("#feature_list").on("click", function () {
             // check if element table does not exist?
             if (document.getElementById("table_prediction")) {
                 document.getElementById("table_prediction").remove();
-
-            } else {
-
-                // Create table element
-                const table_prediction = document.createElement("table");
-                table_prediction.setAttribute("id", "model_results");
-                table_prediction.classList.add("my-table");
-
-                // Create header row
-                const headerRow = document.createElement("tr");
-                const modelHeader = document.createElement("th");
-                modelHeader.textContent = "Model";
-                headerRow.appendChild(modelHeader);
-                const valueHeader = document.createElement("th");
-                valueHeader.textContent = "Prediction (%)";
-                headerRow.appendChild(valueHeader);
-                table_prediction.appendChild(headerRow);
-                // Loop through JSON and create rows
-                for (const key in json_data.prediction) {
-                    const row = document.createElement("tr");
-                    const modelCell = document.createElement("td");
-                    modelCell.textContent = key;
-                    const valueCell = document.createElement("td");
-                    valueCell.textContent = (json_data.prediction[key] * 100).toFixed(2) + " %";
-                    row.appendChild(modelCell);
-                    row.appendChild(valueCell);
-                    table_prediction.appendChild(row);
-                }
-                // Append table to a container
-                container_prediction.appendChild(table_prediction);
-
-                // Create the radio input
-                const container_prediction_radio = document.getElementById("container_prediction_radio");
-                // Create fieldset
-                const fieldset = document.createElement("fieldset");
-                // Create legend
-                const legend = document.createElement("legend");
-                legend.textContent = " Moderate risk bank based on the model output ";
-                fieldset.appendChild(legend);
-                // First div (radio buttons)
-                const div1 = document.createElement("div");
-
-                // Radio options data
-                const options = [
-                    { id: "low_risk", value: "low_risk", label: "Low Risk" },
-                    { id: "middle_risk", value: "middle_risk", label: "Middle Risk" },
-                    { id: "high_risk", value: "high_risk", label: "High Risk" }
-                ]; // Create radios + labels
-                options.forEach(opt => {
-                    const input = document.createElement("input");
-                    input.type = "radio";
-                    input.id = opt.id;
-                    input.name = "prediction_risk";
-                    input.value = opt.value;
-                    const label = document.createElement("label");
-                    label.setAttribute("for", opt.id);
-                    label.textContent = opt.label;
-                    label.setAttribute("style", "margin-left: 5px;");
-                    label.setAttribute("style", "margin-right: 20px;");
-                    div1.appendChild(input);
-                    div1.appendChild(label);
-                });
-                div1.classList.add("fieldset_model");
-                fieldset.appendChild(div1);
-
-                container_prediction_radio.appendChild(fieldset);
-                const xgb = json_data.prediction['XGBoost'] * 100;
-
-                if (xgb > 80) {
-                    document.getElementById('high_risk').style.accentColor = "rgb(246, 51, 102)";
-                    document.getElementById('high_risk').checked = true;
-                } else if (xgb < 40){
-
-                    document.getElementById('low_risk').style.accentColor = "green";
-                    document.getElementById('low_risk').checked = true;
-                } else {
-                    document.getElementById('middle_risk').style.accentColor = "yellow";
-                    document.getElementById('middle_risk').checked = true;
-                }
-
-                // show the resutl of the explainability as image
-                const container_explainability = document.getElementById('container_explainability');
-                const img = document.createElement("img");
-                img.src = "http://localhost:8000/static/imgs/shap_summary.png";   // path to your saved image
-                img.alt = "SHAP Summary Plot";
-                img.style.width = "40%";              // optional
-
-                container_explainability.appendChild(img);
+                document.getElementById("fieldset_prediction").remove();
+                document.getElementById("div_explainability").remove();
 
             }
+
+            // Create table element
+            const table_prediction = document.createElement("table");
+            table_prediction.setAttribute("id", "table_prediction");
+            table_prediction.classList.add("my-table");
+
+            // Create header row
+            const headerRow = document.createElement("tr");
+            const modelHeader = document.createElement("th");
+            modelHeader.textContent = "Model";
+            headerRow.appendChild(modelHeader);
+            const valueHeader = document.createElement("th");
+            valueHeader.textContent = "Prediction (%)";
+            headerRow.appendChild(valueHeader);
+            table_prediction.appendChild(headerRow);
+            // Loop through JSON and create rows
+            for (const key in json_data.prediction) {
+                const row = document.createElement("tr");
+                const modelCell = document.createElement("td");
+                modelCell.textContent = key;
+                const valueCell = document.createElement("td");
+                valueCell.textContent = (json_data.prediction[key] * 100).toFixed(2) + " %";
+                row.appendChild(modelCell);
+                row.appendChild(valueCell);
+                table_prediction.appendChild(row);
+            }
+            // Append table to a container
+            container_prediction.appendChild(table_prediction);
+
+            // Create the radio input
+            const container_prediction_radio = document.getElementById("container_prediction_radio");
+            // Create fieldset
+            const fieldset = document.createElement("fieldset");
+            fieldset.setAttribute("id", "fieldset_prediction")
+            // Create legend
+            const legend = document.createElement("legend");
+            legend.textContent = " Moderate risk bank based on the model output ";
+            fieldset.appendChild(legend);
+            // First div (radio buttons)
+            const div1 = document.createElement("div");
+
+            // Radio options data
+            const options = [{id: "low_risk", value: "low_risk", label: "Low Risk"}, {
+                id: "middle_risk", value: "middle_risk", label: "Middle Risk"
+            }, {id: "high_risk", value: "high_risk", label: "High Risk"}]; // Create radios + labels
+            options.forEach(opt => {
+                const input = document.createElement("input");
+                input.type = "radio";
+                input.id = opt.id;
+                input.name = "prediction_risk";
+                input.value = opt.value;
+                const label = document.createElement("label");
+                label.setAttribute("for", opt.id);
+                label.textContent = opt.label;
+                label.setAttribute("style", "margin-left: 5px;");
+                label.setAttribute("style", "margin-right: 20px;");
+                div1.appendChild(input);
+                div1.appendChild(label);
+            });
+            div1.classList.add("fieldset_model");
+            fieldset.appendChild(div1);
+
+            container_prediction_radio.appendChild(fieldset);
+            const xgb = json_data.prediction['XGBoost'] * 100;
+
+            if (xgb > 80) {
+                document.getElementById('high_risk').style.accentColor = "rgb(246, 51, 102)";
+                document.getElementById('high_risk').checked = true;
+            } else if (xgb < 40) {
+
+                document.getElementById('low_risk').style.accentColor = "green";
+                document.getElementById('low_risk').checked = true;
+            } else {
+                document.getElementById('middle_risk').style.accentColor = "yellow";
+                document.getElementById('middle_risk').checked = true;
+            }
+
+            // show the resutl of the explainability as image
+            const container_explainability = document.getElementById('container_explainability');
+
+            const div_explainability = document.createElement('div');
+            div_explainability.setAttribute('id', 'div_explainability');
+            const img = document.createElement("img");
+            img.src = "http://localhost:8000/static/imgs/shap_summary.png";   // path to your saved image
+            img.alt = "SHAP Summary Plot";
+            img.style.width = "40%";              // optional
+
+            div_explainability.appendChild(img);
+            container_explainability.appendChild(div_explainability);
+
 
         }, error: function (data) {
 
