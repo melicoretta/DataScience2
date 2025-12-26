@@ -1,0 +1,83 @@
+/* Globals */
+
+.flt-l{
+	float:left;
+}
+
+.clr{
+	clear:both;
+	clear:left;
+}
+
+body {
+	margin:0;
+	padding:0;
+	overflow-y:scroll;
+	min-width:1024px;
+}
+
+body.ios {
+	min-width:1024px; /* iPad */
+}
+
+a,
+input,
+select,
+.toggler,
+textarea,
+button {
+	outline:0; /* Highlight */
+	text-decoration:none;
+}
+
+input[type="search"] {
+      -webkit-appearance: textfield;
+}
+
+input[type="submit"],
+input[type="text"],
+input[type="email"],
+textarea {
+	-webkit-appearance: none; /* ios, iPhone, iPad */
+}
+
+input,
+textarea {
+	border-radius:0px;
+}
+
+p.error{
+	color:#f00;
+}
+
+input.text.error,
+textarea.error,
+input.captcha.error,
+select.error{
+	border:1px solid #f00 !important;
+	background:#ffeeee;
+}
+
+sup {
+	vertical-align: top !important;
+	font-size: 0.8em;
+	line-height: 100%;
+}
+
+sub {
+	vertical-align: bottom !important;
+	font-size: 0.8em;
+	line-height: 100%;
+}
+
+#main ul {
+	list-style-type:none;
+}
+
+/* iPhone und iPad tel */
+#container a[href^="tel"]:link,
+#container a[href^="tel"]:visited,
+#container a[href^="tel"]:hover{
+	background:none;
+	padding:0;
+}

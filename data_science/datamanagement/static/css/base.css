@@ -1,0 +1,710 @@
+html {
+    scroll-behavior: smooth;
+    font-family: sans-serif;
+}
+
+span.anchor {
+    margin-top: -78px; /* height of nav*/
+    display: block;
+    height: 78px; /* height of nav*/
+    visibility: hidden;
+    position: relative;
+    scroll-behavior: smooth;
+}
+
+.wikitext {
+    margin-top: 50px !important;
+    text-align: center;
+}
+
+.LearnSys {
+    color: #007455;
+    /*color: darkred;  */
+}
+
+.backmarker {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.faqContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-top: 15%;
+    margin-left: 2%;
+    border: 2px solid black;
+    border-radius: 6px;
+}
+
+#faq {
+    color: black !important;
+    font-size: 1.4em !important;
+}
+
+#faq:hover {
+    font-size: 1.4em !important;
+}
+
+/*  alte login_container from learnsys */
+.loginContainer {
+    position: absolute;
+    bottom: 0%;
+    right: 43%;
+    padding: 1%;
+    text-align: center;
+    float: right;
+    z-index: 20;
+    background-color: rgba(0, 0, 0, 0.8);
+    /* background-color: #fff; */
+    display: flex;
+    flex-wrap: nowrap;
+
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+}
+
+.loginContainer > form {
+
+
+    text-align: center;
+
+}
+
+.loginMain {
+
+}
+
+/*
+.loginContainer {
+    position: absolute;
+    bottom:55%;
+    right: 45%;
+    padding: 1%;
+    text-align: center;
+    float: right;
+    z-index: 20;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+*/
+.homeLogin {
+    text-align: left;
+    width: auto;
+    border: 1px solid #ccc; /* Gray border */
+    border-radius: 4px; /* Rounded borders */
+    box-sizing: border-box; /* Make sure that padding and width stays in place */
+    resize: none; /* Allow the user to vertically resize the textarea (not horizontally) */
+}
+
+#newpassword {
+    font-size: 0.9em;
+}
+
+#anmelden {
+    margin: 3%;
+}
+
+.loginLabel {
+    color: #FFFFFF;
+}
+
+.language {
+    color: black !important;
+    font-size: 1em !important;
+}
+
+.language:hover {
+    font-size: 1em !important;
+    cursor: pointer;
+}
+
+#languageDropdown {
+    border: 1px solid black;
+    margin-left: 5%;
+}
+
+#separator_menu {
+    border-bottom: 2px solid lightgrey;
+    margin-top: 2px;
+    margin-bottom: 5px;
+    /* margin-left: 2%;
+     margin-right: 2%; */
+}
+
+#div_menu_titel {
+    color: white !important;
+    font-family: Verdana, Arial, sans-serif !important;
+    font-size: 1.3em;
+    transition: font-size 0.8s;
+}
+
+.coursefilter {
+    list-style-type: none;
+    margin-left: 15px;
+    position: relative;
+}
+
+.listtwo {
+    float: left;
+}
+
+.nav-link {
+    color: white !important;
+    font-size: 1.2em;
+    transition: font-size 1s;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+
+}
+
+.nav-item {
+    margin-left: 15px;
+
+}
+
+.tel {
+    transition: font-size 1s;
+}
+
+/* (#8ca6ab, rgba(1,1,1,0)) */
+#menu_item { /*.navbar*/
+    /*background-image: linear-gradient(to top, rgba(140,166,171,0), rgba(140,166,171,1)) !important;*/
+    background: linear-gradient(267deg, rgba(35, 133, 137, 1) 100%, rgba(67, 189, 195, 1) 0%) !important;
+    /*background: linear-gradient(267deg, rgba(176,40,18, 0.8) 100%, rgba(0,0,0, 0.8) 0%) !important;*/
+    position: fixed;
+    width: 100%;
+    /*background-color:#e0e0e0 !important;*/
+}
+
+/*parallax background*/
+body, html {
+    height: 100%;
+    margin: 0;
+    /* font: 400 15px/1.8 "Lato", sans-serif;*/
+    /*color: #777;*/
+}
+
+/*hintergründe für parallax scrolling - nice to have - kein muss!*/
+.bgimg-1 /*, .bgimg-2, .bgimg-3 */
+{
+    position: relative;
+    opacity: 0.65;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.bgimg-1 {
+    background-image: url(../imgs/backgrounds/primes_background.jpg);
+    /*background_image is set on base.js*/
+    min-height: 100%;
+    background-size: cover !important;
+    opacity: 0.8 !important;
+
+}
+
+.caption {
+    position: absolute;
+    left: 0;
+    top: 60%;
+    width: 100%;
+    text-align: center;
+    color: #000;
+    overflow: hidden;
+}
+
+.caption span.border {
+    /*background-color: #111;*/
+    color: #fff;
+    padding: 18px;
+    font-size: 30px;
+    letter-spacing: 10px;
+    text-shadow: 0px -1px 7px rgba(150, 150, 150, 1);
+}
+
+span.border.bord {
+    border: none !important;
+}
+
+.arrowContainer {
+    position: absolute;
+    bottom: 0;
+    margin-left: 47%;
+    margin-bottom: 5%;
+    z-index: 15;
+    animation: MoveUpDown 1s linear infinite;
+}
+
+.arrow {
+    border: solid black;
+    border-width: 0 6px 6px 0;
+    display: inline-block;
+    padding: 1.6em;
+}
+
+.down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+}
+
+@keyframes MoveUpDown {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-25px);
+    }
+}
+
+h3 {
+    font: 20px "Lato", sans-serif;
+    color: #111;
+}
+
+.kursBeschreibung {
+    width: auto;
+    font-size: 1.2em !important;
+}
+
+.lockStatus {
+    width: 16%;
+}
+
+.kursLink {
+    text-decoration: underline !important;
+    /*font-weight: bold;*/
+    color: black !important;
+}
+
+.kursLink:hover {
+    font-size: 1em !important;
+    cursor: pointer;
+}
+
+.row {
+    margin-top: 3%;
+
+    background-color: #f0f0f0; /*lightgrey*/
+
+}
+
+.red {
+    color: red;
+}
+
+.footerContainer {
+    background-image: linear-gradient(#49676b, #408a94);
+    /*background-image: linear-gradient(267deg, rgba(176,40,18, 0.8) 100%, rgba(0,0,0, 0.8) 0%) !important; */
+    flex-wrap: wrap;
+    display: flex;
+    border: solid 1px;
+}
+
+.footerContainer > div {
+    font-size: 1em;
+    color: black !important;
+    text-align: left;
+    width: 33%;
+}
+
+.foot-logo {
+    width: 35%;
+    height: 50;
+}
+
+#bottom-left-text {
+    color: black;
+}
+
+
+/*profile.php*/
+.profilInfoContainer {
+    width: 45%;
+    padding-left: 1%;
+}
+
+#profilImg {
+    width: 30%;
+}
+
+.profilInfo {
+    font-size: 0.8em;
+}
+
+.bearbeiten {
+    width: 6%;
+    margin-left: 1%;
+    border-bottom: 2px solid black;
+}
+
+.profilContainer {
+    padding-top: 10%;
+    padding-bottom: 20%;
+    display: flex;
+    flex-direction: row;
+    border: 1px solid black;
+    border-radius: 12px;
+    /*width: 20% !important;
+    text-align: center;*/
+
+    font-size: 1.6em;
+}
+
+.kursContainerProfile {
+    float: right;
+    width: 50%;
+    font-size: 1em;
+}
+
+.courseLink {
+    color: black !important;
+    font-size: 1.2em;
+
+}
+
+.courseLink:hover {
+    font-size: 1.2em;
+    background-color: rgb(35, 133, 137);
+}
+
+.contentPicture {
+    width: 100% !important;
+}
+
+/*profile.php*/
+
+
+/*----*/
+
+
+@media only screen and (max-width: 700px) {
+    /*Stelle für vertikalen homescreen hintergrund (für mobile end)
+      .bgimg-1 {
+        background-image: url(../imgs/backgrounds/XXXXXXXXX.jpg);
+    }*/
+    .caption span.border {
+        font-size: 1.3em;
+        width: 100%;
+    }
+
+    ul, li {
+        /*margin-bottom: 6%;*/
+    }
+
+    li.item_menu {
+
+    }
+
+    .footerContainer {
+        background-image: linear-gradient(#49676b, #408a94);
+        flex-wrap: wrap;
+        display: block;
+    }
+
+    .footerContainer > div {
+        font-size: 1em;
+        color: black !important;
+        text-align: left;
+        width: 100%;
+    }
+
+    .footerContainer > div > img {
+        width: 33% !important;
+    }
+}
+
+/* for table
+.w-20 {
+ -webkit-box-flex: 0;
+ -ms-flex: 0 0 20% !important;
+ flex: 0 0 20% !important;
+ max-width: 20%;
+}
+
+ */
+.class_element {
+    /* background-color: lightgrey; */
+    background-color: darkblue !important /* darkblue */;
+    display: block;
+    width: 100%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    /*color: #495057; */
+    color: #FFFFFF;
+
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+
+}
+
+.table_button {
+
+    display: block;
+
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    text-align: center;
+    padding: 1px 6px;
+    border-width: 2px;
+    background-clip: padding-box;
+    border: 2px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+
+
+    -webkit-writing-mode: horizontal-tb !important;
+    text-rendering: auto;
+    color: -internal-light-dark(black, white);
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: center;
+    align-items: flex-start;
+    cursor: default;
+    background-color: -internal-light-dark(rgb(239, 239, 239), rgb(59, 59, 59));
+    box-sizing: border-box;
+    margin: 0em;
+    font: 400 13.3333px Arial;
+    padding: 1px 6px;
+    border-width: 2px;
+    border-style: outset;
+    border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+    border-image: initial;
+    /*border-radius: 2px;*/
+}
+
+
+table#datalist {
+
+    width: 100%;
+    text-align: center;
+}
+
+
+
+
+/*the container must be positioned relative: for input lagerort
+.autocomplete {
+  position: relative;
+  display: inline-block;
+}
+
+input {
+  border: 1px solid transparent;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+}
+/*
+input[type=text] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+
+input[type=submit] {
+  background-color: DodgerBlue;
+  color: #fff;
+  cursor: pointer;
+}
+
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff;
+  border-bottom: 1px solid #d4d4d4;
+}
+
+/*when hovering an item:
+.autocomplete-items div:hover {
+  background-color: #e9e9e9;
+}
+
+/*when navigating through the items using the arrow keys:
+.autocomplete-active {
+  background-color: DodgerBlue !important;
+  color: #ffffff;
+}
+
+*/
+
+
+.table_lagermanagement {
+
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #1a1a1a !important;
+    margin-right: 10px;
+
+}
+
+/* for table on lagermanagement */
+.table thead th {
+}
+
+.autocomplete {
+    /*the container must be positioned relative:*/
+    position: relative;
+    display: inline-block;
+}
+
+thead {
+    visibility: visible;
+}
+
+.autocomplete-items datalist {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #fff;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.autocomplete-items datalist:hover {
+    /*when hovering an item:*/
+    background-color: #e9e9e9;
+}
+
+.autocomplete-active {
+    /*when navigating through the items using the arrow keys:*/
+    background-color: DodgerBlue !important;
+
+    color: #ffffff;
+}
+
+
+.autocomplete-items {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    /*position the autocomplete items to be the same width as the container:*/
+    top: 100%;
+    left: 0;
+    right: 0;
+}
+
+
+/* selectbox lagerManagement*/
+.ip_lagerort_option {
+    font-size: 20px;
+    padding: 15px;
+    background: #FFFFFF;
+
+
+}
+
+
+.button_rot_primes {
+
+}
+
+#section_item1 {
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+
+/*  für die sichbarkeit von element: Wenn die Tabelle content zu viel ist, sollte die Suche_element sichbar sein,
+ damit dein User nicht hin und her schrollen sollte */
+
+
+#row {
+    position: relative;
+}
+
+#col {
+    overflow: scroll;
+    /*height:400px; */
+}
+
+@media only screen and (min-width: 1200px) {
+
+    #col {
+        overflow: scroll;
+        height: 400px;
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+
+    #col {
+        overflow: scroll;
+        height: 800px;
+    }
+}
+
+#row table {
+    width: 100%;
+
+}
+
+#row table * {
+}
+
+#row table thead th .table_header {
+    position: absolute;
+    top: -20px;
+
+    height: 20px;
+    width: 35%;
+    border: 1px solid red;
+}
+
+/* for dynamic color for consignment */
+.table_consignment {
+    background-color: #3CB371 !important;
+}
+
+.table_list_nr {
+    background-color: #3CB371 !important;
+}
+
+
+/* for datenschutz marge formatierung */
+
+#datenschutz {
+    margin-left: 50px !important;
+    margin-right: 50px !important;
+}
+
+/*  Timer for loggout after 12 minuten*/
+#countdown {
+    background-color: #fff;
+    display: inline-block;
+
+    font-size: 20px;
+    margin: 0;
+    height: 30px;
+    width: 50px;
+}
+
+
+/* new */
+

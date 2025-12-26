@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+{% load i18n %}
+{% load static %}
+{% load bootstrap4 %}
+<html lang="de">
+<!-- file: base.html
+     description: Template for showing register, login and start page
+-->
+
+<head>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <meta charset="utf-8">
+    <base href="{{ BASE_URL }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="title" content="Data Science">
+    <meta name="robots" content="all">
+
+    <meta name="keywords" content="">
+    <meta name="geo.region" content="DE-HE">
+    <meta name="geo.placename" content="Darmstadt">
+    <meta name="geo.position" content="49.79675;8.56081">
+
+    <meta name="distribution" content="global">
+    <meta name="revisit-after" content="7 days">
+    <meta name="description" content="Data Science">
+    <meta name="keywords" content="Darmstadt, TU Darmstadt">
+    <meta name="theme-color" content="#ffffff"><!-- Chrome, Firefox OS and Opera -->
+    <meta name="msapplication-navbutton-color" content="#ffffff"><!-- Windows Phone -->
+    <meta name="apple-mobile-web-app-status-bar-tyle" content="#ffffff"><!-- iOS Safari -->
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css"
+          media="all"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <!--====== bootstrap css ======-->
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+
+    <title>Data Science</title>
+    <link rel="shortcut icon" type="image/png" sizes="192x192" href="{% static 'imgs/logos/tu_logo.png' %}">
+
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+
+<div class="sidebar">
+    <div id=revisionInfo></div>
+    <div id="infoPopup" class=faded></div>
+    <div id="warningPopup" class=faded></div>
+    <div id="errorPopup" class=faded></div>
+    <div class="container_sidebar">
+        <h2 class="element_title"> Input features</h2>
+
+        <!--
+        <div class="autocomplete-wrapper">
+            <p class="item_sidebar"> Subject ID</p>
+            <input id="input_subject_id" type="search" class="form-control input_element" name="subject_id"
+                   placeholder="Search" value=""></div>
+        <ul class="autocomplete-list">
+            <li>
+                <button> aaaa</button>
+            </li>
+            <li>
+                <button> bbbbb</button>
+            </li>
+        </ul>
+    </div>
+    -->
+        <form id="form_subject_id" name="form_subject_id" action=".">
+            {% csrf_token %}
+            <div class="autocomplete-container">
+
+                <label class="autocomplete-label" for="input_subject_id">Subject ID</label>
+                <input
+                        type="text"
+                        id="input_subject_id"
+                        class="autocomplete-input inline_element"
+                        name="input_subject_id"
+                        value=""
+                        placeholder="Type to search..."
+                        autocomplete="off"
+                />
+
+                <!-- Autocomplete results -->
+                <ul id="list_subject_id" class="autocomplete-list"></ul>
+                <button
+                        type="button"
+                        id="submit_subject_id"
+                        class=" button_suject_id inline_element "
+                        name="submit_subject_id"
+                        value=""
+                        autocomplete="off"
+                        style=""
+                >Submit
+                </button>
+
+            </div>
+
+        </form>
+        <form id="form_subject_id" name="form_subject_id" action="." method="POST">
+  {% csrf_token %}
+            <div class="submit_button inline_element">
+
+
+                <!-- Autocomplete results -->
+
+            </div>
+            <!--
+                        <div class="slider-container">
+                            <label for="range">Value: <span id="value">50</span></label>
+                            <input type="range" id="range" min="0" max="100" value="50">
+                        </div>
+
+
+                          new slider bar -->
+            <br>
+            <div class="autocomplete-container">
+
+                <label class="autocomplete-label" for="input_subject_id">Diagnosis</label>
+                <input
+                        type="text"
+                        id="input_diagnosis_id"
+                        class="autocomplete-input"
+                        name="diagnosis"
+                        value=""
+                        placeholder="search diagnosis.."
+                        autocomplete="off"
+                />
+
+                <!-- Autocomplete results -->
+                <ul id="list_diagnosis_id" class="autocomplete-list"></ul>
+            </div>
+
+            <br>
+
+
+            <div class="feature_element">
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">Age</label>
+
+                    <input id="slider_Age" class="input_range" name="Age" type="range" min="18" max="90" value="54" step="1">
+                    <div id="tooltip_Age" style="left: 50%;">54</div>
+                </div>
+                <br>
+
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">GCS_max</label>
+
+                    <input id="slider_GCS_max" name="GCS_max" class="input_range" type="range" min="1.0" max="6.0" value="3.5" step="0.1">
+                    <div id="tooltip_GCS_max" style="left: 50%;">3.5</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">GCS_mean</label>
+
+                    <input id="slider_GCS_mean" name="GCS_mean" class="input_range" type="range" min="1.0" max="6.0" value="3.5" step="0.1">
+                    <div id="tooltip_GCS_mean" style="left: 50%;">3.5</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">Lactate_min</label>
+
+                    <input id="slider_Lactate_min" name="Lactate_min" class="input_range" type="range" min="0.0" max="21.2" value="10.6" step="0.1">
+                    <div id="tooltip_Lactate_min" style="left: 50%;">10.6</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">Lactate_max</label>
+
+                    <input id="slider_Lactate_max" name="Lactate_max" class="input_range" type="range" min="0.3" max="32.0" value="15.85" step="0.01">
+                    <div id="tooltip_Lactate_max" style="left: 50%;">15.85</div>
+                </div>
+                <br>
+
+
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">Lactate_mean</label>
+
+                    <input id="slider_Lactate_mean" name="Lactate_mean" class="input_range" type="range" min="0.3" max="24.92" value="12.31" step="0.01">
+                    <div id="tooltip_Lactate_mean" style="left: 50%;">12.31</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">BUN_min</label>
+
+                    <input id="slider_BUN_min" name="BUN_min" class="input_range" type="range" min="0.0" max="196.0" value="98.0" step="0.01">
+                    <div id="tooltip_BUN_min" style="left: 50%;">98.0</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">BUN_mean</label>
+
+                    <input id="slider_BUN_mean" name="BUN_mean" class="input_range" type="range" min="1.28" max="216.5" value="107.61" step="0.01">
+                    <div id="tooltip_BUN_mean" style="left: 50%;">107.61</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">AG_max</label>
+
+                    <input id="slider_AG_max" name="AG_max" class="input_range" type="range" min="5.0" max="58.0" value="26.5" step="0.01">
+                    <div id="tooltip_AG_max" style="left: 50%;">26.5</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">AG_mean</label>
+
+                    <input id="slider_AG_mean" name="AG_mean" class="input_range" type="range" min="5.0" max="46.875" value="20.93" step="0.001">
+                    <div id="tooltip_AG_mean" style="left: 50%;">20.93</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">Bilirubin_max</label>
+
+                    <input id="slider_Bilirubin_max" name="Bilirubin_max" class="input_range" type="range" min="0.0" max="79.0" value="39.5" step="0.01">
+                    <div id="tooltip_Bilirubin_max" style="left: 50%;">39.5</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">Bilirubin_mean</label>
+
+                    <input id="slider_Bilirubin_mean" name="Bilirubin_mean" class="input_range" type="range" min="0.0" max="68.66" value="34.33" step="0.01">
+                    <div id="tooltip_Bilirubin_mean" style="left: 50%;">34.33</div>
+                </div>
+                <br>
+
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">AG_MEAN</label>
+
+                    <input id="slider_AG_MEAN" name="AG_MEAN" class="input_range" type="range" min="5.5" max="43.0" value="18.75" step="0.01">
+                    <div id="tooltip_AG_MEAN" style="left: 50%;">18.75</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">AG_MAX</label>
+
+                    <input id="slider_AG_MAX" name="AG_MAX" class="input_range" type="range" min="6.0" max="50.0" value="22.0" step="0.01">
+                    <div id="tooltip_AG_MAX" style="left: 50%;">22.0</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">AG_MEDIAN</label>
+
+                    <input id="slider_AG_MEDIAN" name="AG_MEDIAN" class="input_range" type="range" min="5.5" max="44.5" value="19.5" step="0.01">
+                    <div id="tooltip_AG_MEDIAN" style="left: 50%;">19.5</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">AG_MIN</label>
+
+                    <input id="slider_AG_MIN" name="AG_MIN" class="input_range" type="range" min="5.0" max="35.0" value="15.00" step="0.01">
+                    <div id="tooltip_AG_MIN" style="left: 50%;">15.00</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">AG_STD</label>
+
+                    <input id="slider_AG_STD" name="AG_STD" class="input_range" type="range" min="0.0" max="17.03" value="8.5" step="0.01">
+                    <div id="tooltip_AG_STD" style="left: 50%;">8.5</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">SYSBP_MIN</label>
+
+                    <input id="slider_SYSBP_MIN" name="SYSBP_MIN" class="input_range" type="range" min="0.05" max="154.0" value="76.975" step="0.001">
+                    <div id="tooltip_SYSBP_MIN" style="left: 50%;">76.975</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">SYSBP_MEAN</label>
+
+                    <input id="slider_SYSBP_MEAN" name="SYSBP_MEAN" class="input_range" type="range" min="29.16" max="185.47" value="78.155" step="0.01">
+                    <div id="tooltip_SYSBP_MEAN" style="left: 50%;">78.155</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">SYSBP_STD</label>
+
+                    <input id="slider_SYSBP_STD" name="SYSBP_STD" class="input_range" type="range" min="3.51" max="51.85" value="24.17" step="0.01">
+                    <div id="tooltip_SYSBP_STD" style="left: 50%;">24.17</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">DIASBP_MIN</label>
+
+                    <input id="slider_DIASBP_MIN" name="DIASBP_MIN" class="input_range" type="range" min="0.31" max="84.0" value="41.84" step="0.01">
+                    <div id="tooltip_DIASBP_MIN" style="left: 50%;">41.84</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">DIASBP_MEAN</label>
+
+                    <input id="slider_DIASBP_MEAN" name="DIASBP_MEAN" class="input_range" type="range" min="14.5" max="109.92" value="47.71" step="0.01">
+                    <div id="tooltip_DIASBP_MEAN" style="left: 50%;">47.71</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">RR_MEAN</label>
+
+                    <input id="slider_RR_MEAN" name="RR_MEAN" class="input_range" type="range" min="8.32" max="42.80" value="17.24" step="0.01">
+                    <div id="tooltip_RR_MEAN" style="left: 50%;">17.24</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">RR_STD</label>
+
+                    <input id="slider_RR_STD" name="RR_STD" class="input_range" type="range" min="0.0" max="13.75" value="6.88" step="0.01">
+                    <div id="tooltip_RR_STD" style="left: 50%;">6.88</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">RR_MAX</label>
+
+                    <input id="slider_RR_MAX" name="RR_MAX" class="input_range" type="range" min="12.00" max="59.00" value="23.50" step="0.01">
+                    <div id="tooltip_RR_MAX" style="left: 50%;">23.50</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">TEMP_STD</label>
+
+                    <input id="slider_TEMP_STD" name="TEMP_STD" class="input_range" type="range" min="0.0" max="3.00" value="1.50" step="0.01">
+                    <div id="tooltip_TEMP_STD" style="left: 50%;">1.50</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">TEMP_MIN</label>
+
+                    <input id="slider_TEMP_MIN" name="TEMP_MIN" class="input_range" type="range" min="25.20" max="40.10" value="32.65" step="0.01">
+                    <div id="tooltip_TEMP_MIN" style="left: 50%;">32.65</div>
+                </div>
+
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">HR_MEAN</label>
+
+                    <input id="slider_HR_MEAN" name="HR_MEAN" class="input_range" type="range" min="35.93" max="153.44" value="58.76" step="0.01">
+                    <div id="tooltip_HR_MEAN" style="left: 50%;">58.76</div>
+                </div>
+                <br>
+
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">HR_MAX</label>
+
+                    <input id="slider_HR_MAX" name="HR_MAX" class="input_range" type="range" min="53.0" max="245.0" value="96.00" step="0.01">
+                    <div id="tooltip_HR_MAX" style="left: 50%;">96.00</div>
+                </div>
+                <br>
+                <div class="range-tooltip">
+                    <label class="autocomplete-label" for="">age_adj_comorbidity_score</label>
+
+                    <input id="slider_age_adj_comorbidity_score" name="age_adj_comorbidity_score"  class="input_range" type="range" min="0.0" max="58.00" value="29.00" step="0.01">
+                    <div id="tooltip_age_adj_comorbidity_score" style="left: 50%;">29.00</div>
+                </div>
+                <br>
+                <br>
+                <button
+                        type="button"
+                        id="feature_list"
+                        class="button_feature_element"
+                        name="feature_list"
+                        value=""
+                        autocomplete="off"
+                        style="width: 200px;"
+                >Submit Feature
+                </button>
+                 <br>
+            </div>
+
+        </form>
+
+    </div>
+
+    </form>
+
+</div>
+</div>
+
+<div class="main">
+    <br>
+    <h2>🤖 Machine Learning App</h2>
+    <h3>Patient Data Table</h3>
+    <div id="tableContainer"></div>
+    <br>
+
+    <div id="container_prediction"></div>
+    <div id="container_prediction_radio"></div>
+     <div id="container_explainability"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+
+<script src="{% static  'js/datamanagement.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.12.4.js"></script>
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.12.4.js"></script>
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id="
+            style="display:none;visibility:hidden; height: 0; width:0 "></iframe>
+</noscript>
+
+
+</body>
+</html>
