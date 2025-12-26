@@ -95,3 +95,5 @@ To ensure model transparency and explainability, the project integrates the SHAP
 
 
 Overall, the project combines data science, machine learning, explainable AI, and web development to deliver an end-to-end solution for mortality prediction using real-world clinical data.
+
+![Application Screenshot](img_application.JPG)
