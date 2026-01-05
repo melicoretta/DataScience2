@@ -19,7 +19,7 @@ import joblib
 
 
 # Read csv files
-file_path = 'C://tu_project//data_science//datamanagement//static//files//first_feature_df_17_12_2025.csv'
+file_path = "C:\\tu_project\\DataScience2\\data_science\\datamanagement\\static\\files\\third_feature_df_28_12_2025.csv"
 df = pd.read_csv(file_path)
 df.head(10)
 
@@ -86,14 +86,14 @@ X_test  = X_test.fillna(medians)
 
 # Train the different model
 
-model_lr= LogisticRegression(class_weight="balanced", max_iter=2000)
-model_lr.fit(X_train, y_train)
+#model_lr= LogisticRegression(class_weight="balanced", max_iter=2000)
+#model_lr.fit(X_train, y_train)
 
-model_dtc=DecisionTreeClassifier(max_depth=4, min_samples_leaf=50, class_weight="balanced", random_state=42)
-model_dtc.fit(X_train, y_train)
+#model_dtc=DecisionTreeClassifier(max_depth=4, min_samples_leaf=50, class_weight="balanced", random_state=42)
+#model_dtc.fit(X_train, y_train)
 
-model_rfc= RandomForestClassifier(n_estimators=400,random_state=42,n_jobs=-1,class_weight="balanced_subsample")
-model_rfc.fit(X_train, y_train)
+#model_rfc= RandomForestClassifier(n_estimators=400,random_state=42,n_jobs=-1,class_weight="balanced_subsample")
+#model_rfc.fit(X_train, y_train)
 
 
 
@@ -117,8 +117,8 @@ model_xgb=xgb.XGBClassifier(
 model_xgb.fit(X_train, y_train)
 
 
-joblib.dump(model_xgb, 'C:\\tu_project\\data_science\\datamanagement\\static\\files\\model_xgb.joblib')
-joblib.dump(model_rfc, 'C:\\tu_project\\data_science\\datamanagement\\static\\files\\model_rfc.joblib')
-joblib.dump(model_dtc, 'C:\\tu_project\\data_science\\datamanagement\\static\\files\\model_dtc.joblib')
-joblib.dump(model_lr, 'C:\\tu_project\\data_science\\datamanagement\\static\\files\\model_lr.joblib')
+joblib.dump(model_xgb, "C:\\tu_project\\DataScience2\\data_science\\datamanagement\\static\\model\\model_xgb_03_01_2025.joblib")
+#/joblib.dump(model_rfc, 'C:\\tu_project\\data_science\\datamanagement\\static\\files\\model_rfc.joblib')
+#joblib.dump(model_dtc, 'C:\\tu_project\\data_science\\datamanagement\\static\\files\\model_dtc.joblib')
+#joblib.dump(model_lr, 'C:\\tu_project\\data_science\\datamanagement\\static\\files\\model_lr.joblib')
 

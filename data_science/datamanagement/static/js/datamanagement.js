@@ -1,3 +1,21 @@
+document.querySelectorAll('.stTabs-button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const tabId = btn.dataset.tab;
+
+        // deactivate all buttons
+        document.querySelectorAll('.stTabs-button')
+            .forEach(b => b.classList.remove('is-active'));
+
+        // hide all panels
+        document.querySelectorAll('.stTabs-panel')
+            .forEach(p => p.classList.remove('is-active'));
+
+        // activate clicked tab and panel
+        btn.classList.add('is-active');
+        document.getElementById(tabId).classList.add('is-active');
+    });
+});
+
 document.addEventListener('DOMContentLoaded', () => {
 
     const applyBorder = e => {
@@ -160,6 +178,20 @@ $("#submit_subject_id").click().autocomplete({
     }
 });
 
+function split_date(date_element) {
+    const item_value = new Date(date_element);
+    const year = item_value.getFullYear();
+    const month = String(item_value.getMonth() + 1).padStart(2, '0');
+    const day = String(item_value.getDate()).padStart(2, '0');
+    const formatted = `${day}-${month}-${year}`;
+    return formatted;
+}
+
+function cutTo3(num) {
+    return Math.trunc(num * 1000) / 1000;
+}
+
+
 $("#submit_subject_id").on("click", function () {
     $.ajaxSetup({
         headers: {
@@ -176,85 +208,245 @@ $("#submit_subject_id").on("click", function () {
             if (json_data.data_lenght === 0) {
                 displayMessage("warning", "subject_id '" + json_data.subject_id + "' not found!");
 
-            } else {
+            }
+            console.log(json_data);
 
-                const data = JSON.parse(json_data.data);
+            const data = JSON.parse(json_data.data);
 
-                // Get container
-                const container = document.getElementById("tableContainer");
+            if (document.getElementById("patient_container")) {
+                document.getElementById("patient_container").remove();
+            }
+            const container = document.getElementById("tableContainer");
 
-                // check if element id_table exist, yes -> insert element on table
-                // no -> create new element table
+            // create element patient_container
+            const patient_container = document.createElement('div');
+            patient_container.setAttribute('id', 'patient_container');
+            const rowKeys = Object.keys(data.Age).sort((a, b) => data.Age[a] - data.Age[b]);
+            rowKeys.forEach(key => {
 
-                // check if element table does not exist?
-                if (document.getElementById("id_table")) {
-
-                    document.getElementById("id_table").remove();
-
+                const subject = data.Subject_id[key];
+                const hadm_id = data.Hadm_id[key];
+                const diagnosis = data.Diagnosis[key];
+                const gender = data.Gender[key];
+                const birthday = split_date(data.Birthday[key]);
+                const admission = split_date(data.Admission_time[key]);
+                const age = data.Age[key];
+                const marital = data.Marital_status[key];
+                let died;
+                if (data.Died[key] === 0) {
+                    died = "No";
+                } else {
+                    died = "Yes";
                 }
 
-                // Create table
+                // <details>
+                const details = document.createElement("details");
+                details.style.marginBottom = "10px";
+                // <summary>
+                const summary = document.createElement("summary");
+                summary.style.cursor = "pointer";
+                summary.style.fontWeight = "bold";
+                summary.textContent = `Subject_id ${subject} — [${hadm_id}], [${age}] year old, [Died:${died}], ${diagnosis}`;
+                //summary.style.backgroundColor = "rgb(248, 249, 251)";
+                summary.style.borderRadius = "5px";
+                summary.classList.add("summary_element");
+
+                details.appendChild(summary);
+
+                // <table>
                 const table = document.createElement("table");
-                table.setAttribute("id", "id_table");
-                table.classList.add("my-table")
-                // Create table header
-                const thead = document.createElement("thead");
-                const headerRow = document.createElement("tr");
+                table.border = "1";
+                table.style.marginTop = "8px";
+                table.classList.add("table_inline");
 
-                const columns = Object.keys(data);
-                columns.forEach(col => {
-                    const th = document.createElement("th");
-                    th.textContent = col;
-                    headerRow.appendChild(th);
-                });
-                thead.appendChild(headerRow);
-                table.appendChild(thead);
-
-                // Create table body
-                const tbody = document.createElement("tbody");
-
-                // Number of rows
-                const rowKeys = Object.keys(data[columns[0]]);
-                rowKeys.forEach(rowKey => {
+                // Helper to add rows
+                function addRow(label, value) {
                     const tr = document.createElement("tr");
-                    columns.forEach(col => {
-                        const td = document.createElement("td");
-                        let value;
+                    const td1 = document.createElement("td");
+                    const strong = document.createElement("strong");
+                    strong.textContent = label;
+                    td1.appendChild(strong);
 
-                        // convert the date like '3814732800000' as 'Sat Sep 18 2099' [birthday]
-                        if (col === "Birthday" || col === "Admission_time") {
-                            const item_value = new Date(data[col][rowKey]);
-                            const year = item_value.getFullYear();
-                            const month = String(item_value.getMonth() + 1).padStart(2, '0');
-                            const day = String(item_value.getDate()).padStart(2, '0');
-                            const formatted = `${day}-${month}-${year}`;
-                            value = formatted;
+                    // add style for td element for label like "
+                    //td1.style.backgroundColor = "rgb(255, 204, 217)";
 
-                        } else if (col === "Diagnosis" || col === "Marital_status") {
-                            value = (data[col][rowKey] || "").toLowerCase();
-                        } else if (col === "Died") {
-                            const item_value = data[col][rowKey];
-                            if (item_value === 0) {
-                                value = "No";
-                            } else {
-                                value = "Yes";
-                            }
-                        } else {
-                            value = data[col][rowKey];
-                        }
-                        if (value === null) value = ""; // handle null
-                        td.textContent = value;
-                        tr.appendChild(td);
+                    // end of style td1
+                    const td2 = document.createElement("td");
+                    td2.textContent = value;
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+                    table.appendChild(tr);
+                }
+
+                addRow("Subject_id", subject);
+                addRow("Hadm_id", hadm_id);
+                addRow("Diagnosis", (diagnosis || "").toLowerCase());
+                addRow("Gender", gender);
+                addRow("Birthday", birthday);
+                addRow("Admission_time", admission);
+                addRow("Age", age);
+                addRow("Marital_status", marital);
+                addRow("Died", died);
+                details.appendChild(table);
+
+                const table_model = document.createElement("table");
+                table_model.border = "1";
+                table_model.style.marginTop = "8px";
+
+                function addRow_table_model(label, value) {
+                    const tr = document.createElement("tr");
+                    const td1 = document.createElement("td");
+                    const strong = document.createElement("strong");
+                    strong.textContent = label;
+                    td1.appendChild(strong);
+
+                    // add style for td element for label like "
+                    //td1.style.backgroundColor = "rgb(255, 204, 217)";
+
+                    // end of style td1
+                    const td2 = document.createElement("td");
+                    td2.textContent = value;
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+                    table.appendChild(tr);
+                }
+
+                if (json_data.model_detail[hadm_id][0].len_hadm_id_result === 0) {
+                    addRow_table_model("HADM_ID result ", json_data.model_detail[hadm_id][0].len_hadm_id_result);
+                    const div_plot = document.createElement('div');
+                    div_plot.setAttribute('id', `shapPlot_${hadm_id}`);
+                    details.appendChild(div_plot);
+
+                    patient_container.appendChild(details);
+                    container.appendChild(patient_container);
+                } else {
+                    addRow_table_model("Model Prediction ", cutTo3(json_data.model_detail[hadm_id][0].prediction.XGBoost));
+
+                    const div_plot = document.createElement('div');
+                    div_plot.setAttribute('id', `shapPlot_${hadm_id}`);
+                    details.appendChild(div_plot);
+
+                    patient_container.appendChild(details);
+                    container.appendChild(patient_container);
+
+                    // begin top contributor for feature that influente the model prediction
+                    const table_contributor = document.createElement("table");
+                    table_contributor.border = "1";
+                    table_contributor.style.marginTop = "8px";
+
+                    // Helper to add rows
+                    function addRow_feature(feature_name, feature_value) {
+                        const tr = document.createElement("tr");
+                        const td1 = document.createElement("td");
+                        const strong = document.createElement("strong");
+                        strong.textContent = feature_name;
+                        td1.appendChild(strong);
+
+                        // add style for td element for label like "
+                        //td1.style.backgroundColor = "rgb(255, 204, 217)";
+
+                        // end of style td1
+                        const td2 = document.createElement("td");
+                        td2.textContent = feature_value;
+                        tr.appendChild(td1);
+                        tr.appendChild(td2);
+                        table_contributor.appendChild(tr);
+                    }
+
+
+                    const details_contributor = document.createElement("details");
+                    details_contributor.style.marginBottom = "10px";
+                    details_contributor.classList.add('table_inline');
+                    // <summary>
+                    const summary_contributor = document.createElement("summary");
+                    summary_contributor.style.cursor = "pointer";
+                    summary_contributor.style.fontWeight = "bold";
+                    summary_contributor.textContent = `*** Most impactful features and value driving the model’s prediction ***`;
+                    //summary.style.backgroundColor = "rgb(248, 249, 251)";
+                    summary_contributor.style.borderRadius = "5px";
+                    summary_contributor.classList.add("table_inline");
+
+                    details_contributor.appendChild(summary_contributor);
+                    data_feature = json_data.model_detail[hadm_id][0].frontend_data;
+
+
+                    data_feature.feature_name.forEach((name, index) => {
+                        addRow_feature(data_feature.feature_name[index], cutTo3(data_feature.feature_value[index]));
+
                     });
-                    tbody.appendChild(tr);
-                });
+                    details_contributor.appendChild(table_contributor);
+                    details.append(details_contributor);
 
-                table.appendChild(tbody);
 
-                // Append table to container
-                container.appendChild(table);
 
-            }
+                    // add the plot for every diagnosis of this subject_id
+                    const featureNames = json_data.model_detail[hadm_id][0].explainability.XGBoost.feature_names;
+                    const shapValues = json_data.model_detail[hadm_id][0].explainability.XGBoost.shap_values;
+
+                    const trace = {
+                        x: shapValues,
+                        y: featureNames,
+                        mode: 'markers',
+                        type: 'scatter',
+                        marker: {
+                            size: 7,
+                            color: shapValues,
+                            colorscale: [
+                                [0, 'rgb(255, 8, 0)'], // start color
+                                [1, 'rgb(0, 0, 255)'] // end color (blue)
+                            ],
+                            cmin: Math.min(...shapValues),
+                            cmax: Math.max(...shapValues),
+                            reversescale: true,
+                            colorbar: {
+                                title: {text: 'Low ← SHAP Value → High', font: {size: 11}}
+                            },
+                            tickmode: 'array',
+                            tickvals: [
+                                Math.min(...shapValues),
+                                Math.max(...shapValues)
+                            ],
+                            ticktext: ['Low', '0', 'High'],
+                            ticks: 'outside',
+                            len: 0.8, // height
+                            thickness: 1, // width
+                            thicknessmode: 'pixels',
+                            outlinewidth: 0,
+                            borderwidth: 0,
+                            bgcolor: 'rgba(0,0,0,0)'
+
+                        }
+                    };
+                    const layout = {
+
+                        height: 550,
+                        title: {
+                            text: `SHAP Summary Plot of Subject_id [${subject}], HADM_ID [${hadm_id}]`,
+                            font: {size: 12}
+                        },
+                        xaxis: {
+                            title: {text: 'SHAP Value (Impact on Model Output)', font: {size: 12}},
+                            tickfont: {size: 10}
+                        }, yaxis: {
+                            title: {text: 'Feature', font: {size: 12}},
+                            tickfont: {size: 9},
+                            type: 'category',
+                            automargin: true
+                        }, margin: {
+                            l: 150,
+                            r: 50,
+                            t: 50,
+                            b: 50
+                        },
+
+
+                    };
+                    //
+                    Plotly.newPlot(`shapPlot_${hadm_id}`, [trace], layout, {responsive: true});
+                }
+
+
+            });
 
 
         }, error: function (data) {
@@ -265,22 +457,6 @@ $("#submit_subject_id").on("click", function () {
     });
 });
 
-
-// slider button
-/*
-const slideValue = document.querySelector("span");
-const inputSlider = document.querySelector("#feature1");
-inputSlider.oninput = (() => {
-    let value = inputSlider.value;
-    slideValue.textContent = value;
-    slideValue.style.left = (value * 10) + "%";
-    slideValue.classList.add("show");
-});
-inputSlider.onblur = (() => {
-    //slideValue.classList.remove("show");
-});
-*/
-// new code
 
 let activeIndex = -1;
 
@@ -378,262 +554,305 @@ slider.addEventListener("input", () => {
 // slider input for age
 const slider_Age = document.getElementById("slider_Age");
 const tooltip_Age = document.getElementById("tooltip_Age");
-slider_Age.addEventListener("input", () => {
-    tooltip_Age.textContent = slider_Age.value;
-    const percent = (slider_Age.value - slider_Age.min) / (slider_Age.max - slider_Age.min);
-    tooltip_Age.style.left = `${percent * 100}%`;
+
+slider_Age.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_Age, tooltip_Age);
 });
 
 // slider input for age
 const slider_GCS_max = document.getElementById("slider_GCS_max");
 const tooltip_GCS_max = document.getElementById("tooltip_GCS_max");
-slider_GCS_max.addEventListener("input", () => {
-    tooltip_GCS_max.textContent = slider_GCS_max.value;
-    const percent = (slider_GCS_max.value - slider_GCS_max.min) / (slider_GCS_max.max - slider_GCS_max.min);
-    tooltip_GCS_max.style.left = `${percent * 100}%`;
+slider_GCS_max.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_GCS_max, tooltip_GCS_max);
 });
 
 // slider input for age
 const slider_GCS_mean = document.getElementById("slider_GCS_mean");
 const tooltip_GCS_mean = document.getElementById("tooltip_GCS_mean");
-slider_GCS_mean.addEventListener("input", () => {
-    tooltip_GCS_mean.textContent = slider_GCS_mean.value;
-    const percent = (slider_GCS_mean.value - slider_GCS_mean.min) / (slider_GCS_mean.max - slider_GCS_mean.min);
-    tooltip_GCS_mean.style.left = `${percent * 100}%`;
+slider_GCS_mean.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_GCS_mean, tooltip_GCS_mean);
 });
 
 // slider input for slider_Lactate_min
 const slider_Lactate_min = document.getElementById("slider_Lactate_min");
 const tooltip_Lactate_min = document.getElementById("tooltip_Lactate_min");
-slider_Lactate_min.addEventListener("input", () => {
-    tooltip_Lactate_min.textContent = slider_Lactate_min.value;
-    const percent = (slider_Lactate_min.value - slider_Lactate_min.min) / (slider_Lactate_min.max - slider_Lactate_min.min);
-    tooltip_Lactate_min.style.left = `${percent * 100}%`;
+slider_Lactate_min.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_Lactate_min, tooltip_Lactate_min);
 });
 
 // slider input for slider_Lactate_min
 const slider_Lactate_max = document.getElementById("slider_Lactate_max");
 const tooltip_Lactate_max = document.getElementById("tooltip_Lactate_max");
-slider_Lactate_max.addEventListener("input", () => {
-    tooltip_Lactate_max.textContent = slider_Lactate_max.value;
-    const percent = (slider_Lactate_max.value - slider_Lactate_max.min) / (slider_Lactate_max.max - slider_Lactate_max.min);
-    tooltip_Lactate_max.style.left = `${percent * 100}%`;
+slider_Lactate_max.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_Lactate_max, tooltip_Lactate_max);
 });
 
 // slider input for slider_Lactate_min
 const slider_Lactate_mean = document.getElementById("slider_Lactate_mean");
 const tooltip_Lactate_mean = document.getElementById("tooltip_Lactate_mean");
-slider_Lactate_mean.addEventListener("input", () => {
-    tooltip_Lactate_mean.textContent = slider_Lactate_mean.value;
-    const percent = (slider_Lactate_mean.value - slider_Lactate_mean.min) / (slider_Lactate_mean.max - slider_Lactate_mean.min);
-    tooltip_Lactate_mean.style.left = `${percent * 100}%`;
+slider_Lactate_mean.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_Lactate_mean, tooltip_Lactate_mean);
 });
 
 const slider_BUN_min = document.getElementById("slider_BUN_min");
 const tooltip_BUN_min = document.getElementById("tooltip_BUN_min");
-slider_BUN_min.addEventListener("input", () => {
-    tooltip_BUN_min.textContent = slider_BUN_min.value;
-    const percent = (slider_BUN_min.value - slider_BUN_min.min) / (slider_BUN_min.max - slider_BUN_min.min);
-    tooltip_BUN_min.style.left = `${percent * 100}%`;
+slider_BUN_min.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_BUN_min, tooltip_BUN_min);
 });
 
 const slider_BUN_mean = document.getElementById("slider_BUN_mean");
 const tooltip_BUN_mean = document.getElementById("tooltip_BUN_mean");
-slider_BUN_mean.addEventListener("input", () => {
-    tooltip_BUN_mean.textContent = slider_BUN_mean.value;
-    const percent = (slider_BUN_mean.value - slider_BUN_mean.min) / (slider_BUN_mean.max - slider_BUN_mean.min);
-    tooltip_BUN_mean.style.left = `${percent * 100}%`;
-});
-
-const slider_AG_max = document.getElementById("slider_AG_max");
-const tooltip_AG_max = document.getElementById("tooltip_AG_max");
-slider_AG_max.addEventListener("input", () => {
-    tooltip_AG_max.textContent = slider_AG_max.value;
-    const percent = (slider_AG_max.value - slider_AG_max.min) / (slider_AG_max.max - slider_AG_max.min);
-    tooltip_AG_max.style.left = `${percent * 100}%`;
-});
-
-const slider_AG_mean = document.getElementById("slider_AG_mean");
-const tooltip_AG_mean = document.getElementById("tooltip_AG_mean");
-slider_AG_mean.addEventListener("input", () => {
-    tooltip_AG_mean.textContent = slider_AG_mean.value;
-    const percent = (slider_AG_mean.value - slider_AG_mean.min) / (slider_AG_mean.max - slider_AG_mean.min);
-    tooltip_AG_mean.style.left = `${percent * 100}%`;
+slider_BUN_mean.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_BUN_mean, tooltip_BUN_mean);
 });
 
 const slider_Bilirubin_max = document.getElementById("slider_Bilirubin_max");
 const tooltip_Bilirubin_max = document.getElementById("tooltip_Bilirubin_max");
-slider_Bilirubin_max.addEventListener("input", () => {
-    tooltip_Bilirubin_max.textContent = slider_Bilirubin_max.value;
-    const percent = (slider_Bilirubin_max.value - slider_Bilirubin_max.min) / (slider_Bilirubin_max.max - slider_Bilirubin_max.min);
-    tooltip_Bilirubin_max.style.left = `${percent * 100}%`;
+slider_Bilirubin_max.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_Bilirubin_max, tooltip_Bilirubin_max);
 });
-
 
 const slider_Bilirubin_mean = document.getElementById("slider_Bilirubin_mean");
 const tooltip_Bilirubin_mean = document.getElementById("tooltip_Bilirubin_mean");
-slider_Bilirubin_mean.addEventListener("input", () => {
-    tooltip_Bilirubin_mean.textContent = slider_Bilirubin_mean.value;
-    const percent = (slider_Bilirubin_mean.value - slider_Bilirubin_mean.min) / (slider_Bilirubin_mean.max - slider_Bilirubin_mean.min);
-    tooltip_Bilirubin_mean.style.left = `${percent * 100}%`;
+slider_Bilirubin_mean.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_Bilirubin_mean, tooltip_Bilirubin_mean);
 });
 
 const slider_AG_MEAN = document.getElementById("slider_AG_MEAN");
 const tooltip_AG_MEAN = document.getElementById("tooltip_AG_MEAN");
-slider_AG_MEAN.addEventListener("input", () => {
-    tooltip_AG_MEAN.textContent = slider_AG_MEAN.value;
-    const percent = (slider_AG_MEAN.value - slider_AG_MEAN.min) / (slider_AG_MEAN.max - slider_AG_MEAN.min);
-    tooltip_AG_MEAN.style.left = `${percent * 100}%`;
+slider_AG_MEAN.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_AG_MEAN, tooltip_AG_MEAN);
 });
 
 const slider_AG_MAX = document.getElementById("slider_AG_MAX");
 const tooltip_AG_MAX = document.getElementById("tooltip_AG_MAX");
-slider_AG_MAX.addEventListener("input", () => {
-    tooltip_AG_MAX.textContent = slider_AG_MAX.value;
-    const percent = (slider_AG_MAX.value - slider_AG_MAX.min) / (slider_AG_MAX.max - slider_AG_MAX.min);
-    tooltip_AG_MAX.style.left = `${percent * 100}%`;
+slider_AG_MAX.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_AG_MAX, tooltip_AG_MAX);
 });
 
 const slider_AG_MEDIAN = document.getElementById("slider_AG_MEDIAN");
 const tooltip_AG_MEDIAN = document.getElementById("tooltip_AG_MEDIAN");
-slider_AG_MEDIAN.addEventListener("input", () => {
-    tooltip_AG_MEDIAN.textContent = slider_AG_MEDIAN.value;
-    const percent = (slider_AG_MEDIAN.value - slider_AG_MEDIAN.min) / (slider_AG_MEDIAN.max - slider_AG_MEDIAN.min);
-    tooltip_AG_MEDIAN.style.left = `${percent * 100}%`;
+slider_AG_MEDIAN.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_AG_MEDIAN, tooltip_AG_MEDIAN);
 });
 
 const slider_AG_MIN = document.getElementById("slider_AG_MIN");
 const tooltip_AG_MIN = document.getElementById("tooltip_AG_MIN");
-slider_AG_MIN.addEventListener("input", () => {
-    tooltip_AG_MIN.textContent = slider_AG_MIN.value;
-    const percent = (slider_AG_MIN.value - slider_AG_MIN.min) / (slider_AG_MIN.max - slider_AG_MIN.min);
-    tooltip_AG_MIN.style.left = `${percent * 100}%`;
+slider_AG_MIN.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_AG_MIN, tooltip_AG_MIN);
 });
 
 const slider_AG_STD = document.getElementById("slider_AG_STD");
 const tooltip_AG_STD = document.getElementById("tooltip_AG_STD");
-slider_AG_STD.addEventListener("input", () => {
-    tooltip_AG_STD.textContent = slider_AG_STD.value;
-    const percent = (slider_AG_STD.value - slider_AG_STD.min) / (slider_AG_STD.max - slider_AG_STD.min);
-    tooltip_AG_STD.style.left = `${percent * 100}%`;
+slider_AG_STD.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_AG_STD, tooltip_AG_STD);
 });
 
 const slider_SYSBP_MIN = document.getElementById("slider_SYSBP_MIN");
 const tooltip_SYSBP_MIN = document.getElementById("tooltip_SYSBP_MIN");
-slider_SYSBP_MIN.addEventListener("input", () => {
-    tooltip_SYSBP_MIN.textContent = slider_SYSBP_MIN.value;
-    const percent = (slider_SYSBP_MIN.value - slider_SYSBP_MIN.min) / (slider_SYSBP_MIN.max - slider_SYSBP_MIN.min);
-    tooltip_SYSBP_MIN.style.left = `${percent * 100}%`;
+slider_SYSBP_MIN.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_SYSBP_MIN, tooltip_SYSBP_MIN);
 });
 
 const slider_SYSBP_MEAN = document.getElementById("slider_SYSBP_MEAN");
 const tooltip_SYSBP_MEAN = document.getElementById("tooltip_SYSBP_MEAN");
-slider_SYSBP_MEAN.addEventListener("input", () => {
-    tooltip_SYSBP_MEAN.textContent = slider_SYSBP_MEAN.value;
-    const percent = (slider_SYSBP_MEAN.value - slider_SYSBP_MEAN.min) / (slider_SYSBP_MEAN.max - slider_SYSBP_MEAN.min);
-    tooltip_SYSBP_MEAN.style.left = `${percent * 100}%`;
+slider_SYSBP_MEAN.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_SYSBP_MEAN, tooltip_SYSBP_MEAN);
 });
 
 const slider_SYSBP_STD = document.getElementById("slider_SYSBP_STD");
 const tooltip_SYSBP_STD = document.getElementById("tooltip_SYSBP_STD");
-slider_SYSBP_STD.addEventListener("input", () => {
-    tooltip_SYSBP_STD.textContent = slider_SYSBP_STD.value;
-    const percent = (slider_SYSBP_STD.value - slider_SYSBP_STD.min) / (slider_SYSBP_STD.max - slider_SYSBP_STD.min);
-    tooltip_SYSBP_STD.style.left = `${percent * 100}%`;
+slider_SYSBP_STD.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_SYSBP_STD, tooltip_SYSBP_STD);
 });
 
 
 const slider_DIASBP_MIN = document.getElementById("slider_DIASBP_MIN");
 const tooltip_DIASBP_MIN = document.getElementById("tooltip_DIASBP_MIN");
-slider_DIASBP_MIN.addEventListener("input", () => {
-    tooltip_DIASBP_MIN.textContent = slider_DIASBP_MIN.value;
-    const percent = (slider_DIASBP_MIN.value - slider_DIASBP_MIN.min) / (slider_DIASBP_MIN.max - slider_DIASBP_MIN.min);
-    tooltip_DIASBP_MIN.style.left = `${percent * 100}%`;
+slider_DIASBP_MIN.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_DIASBP_MIN, tooltip_DIASBP_MIN);
 });
 
 const slider_DIASBP_MEAN = document.getElementById("slider_DIASBP_MEAN");
 const tooltip_DIASBP_MEAN = document.getElementById("tooltip_DIASBP_MEAN");
-slider_DIASBP_MEAN.addEventListener("input", () => {
-    tooltip_DIASBP_MEAN.textContent = slider_DIASBP_MEAN.value;
-    const percent = (slider_DIASBP_MEAN.value - slider_DIASBP_MEAN.min) / (slider_DIASBP_MEAN.max - slider_DIASBP_MEAN.min);
-    tooltip_DIASBP_MEAN.style.left = `${percent * 100}%`;
+slider_DIASBP_MEAN.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_DIASBP_MEAN, tooltip_DIASBP_MEAN);
 });
 
 const slider_RR_MEAN = document.getElementById("slider_RR_MEAN");
 const tooltip_RR_MEAN = document.getElementById("tooltip_RR_MEAN");
-slider_RR_MEAN.addEventListener("input", () => {
-    tooltip_RR_MEAN.textContent = slider_RR_MEAN.value;
-    const percent = (slider_RR_MEAN.value - slider_RR_MEAN.min) / (slider_RR_MEAN.max - slider_RR_MEAN.min);
-    tooltip_RR_MEAN.style.left = `${percent * 100}%`;
+slider_RR_MEAN.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_RR_MEAN, tooltip_RR_MEAN);
 });
 
 const slider_RR_STD = document.getElementById("slider_RR_STD");
 const tooltip_RR_STD = document.getElementById("tooltip_RR_STD");
-slider_RR_STD.addEventListener("input", () => {
-    tooltip_RR_STD.textContent = slider_RR_STD.value;
-    const percent = (slider_RR_STD.value - slider_RR_STD.min) / (slider_RR_STD.max - slider_RR_STD.min);
-    tooltip_RR_STD.style.left = `${percent * 100}%`;
+slider_RR_STD.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_RR_STD, tooltip_RR_STD);
 });
 
 const slider_RR_MAX = document.getElementById("slider_RR_MAX");
 const tooltip_RR_MAX = document.getElementById("tooltip_RR_MAX");
-slider_RR_MAX.addEventListener("input", () => {
-    tooltip_RR_MAX.textContent = slider_RR_MAX.value;
-    const percent = (slider_RR_MAX.value - slider_RR_MAX.min) / (slider_RR_MAX.max - slider_RR_MAX.min);
-    tooltip_RR_MAX.style.left = `${percent * 100}%`;
+slider_RR_MAX.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_RR_MAX, tooltip_RR_MAX);
+});
+
+const slider_RR_MIN = document.getElementById("slider_RR_MIN");
+const tooltip_RR_MIN = document.getElementById("tooltip_RR_MIN");
+slider_RR_MIN.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_RR_MIN, tooltip_RR_MIN);
 });
 
 const slider_TEMP_STD = document.getElementById("slider_TEMP_STD");
 const tooltip_TEMP_STD = document.getElementById("tooltip_TEMP_STD");
-slider_TEMP_STD.addEventListener("input", () => {
-    tooltip_TEMP_STD.textContent = slider_TEMP_STD.value;
-    const percent = (slider_TEMP_STD.value - slider_TEMP_STD.min) / (slider_TEMP_STD.max - slider_TEMP_STD.min);
-    tooltip_TEMP_STD.style.left = `${percent * 100}%`;
+slider_TEMP_STD.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_TEMP_STD, tooltip_TEMP_STD);
 });
 
 const slider_TEMP_MIN = document.getElementById("slider_TEMP_MIN");
 const tooltip_TEMP_MIN = document.getElementById("tooltip_TEMP_MIN");
-slider_TEMP_MIN.addEventListener("input", () => {
-    tooltip_TEMP_MIN.textContent = slider_TEMP_MIN.value;
-    const percent = (slider_TEMP_MIN.value - slider_TEMP_MIN.min) / (slider_TEMP_MIN.max - slider_TEMP_MIN.min);
-    tooltip_TEMP_MIN.style.left = `${percent * 100}%`;
+slider_TEMP_MIN.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_TEMP_MIN, tooltip_TEMP_MIN);
 });
 
 const slider_HR_MEAN = document.getElementById("slider_HR_MEAN");
 const tooltip_HR_MEAN = document.getElementById("tooltip_HR_MEAN");
-slider_HR_MEAN.addEventListener("input", () => {
-    tooltip_HR_MEAN.textContent = slider_HR_MEAN.value;
-    const percent = (slider_HR_MEAN.value - slider_HR_MEAN.min) / (slider_HR_MEAN.max - slider_HR_MEAN.min);
-    tooltip_HR_MEAN.style.left = `${percent * 100}%`;
+slider_HR_MEAN.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_HR_MEAN, tooltip_HR_MEAN);
 });
 
 const slider_HR_MAX = document.getElementById("slider_HR_MAX");
 const tooltip_HR_MAX = document.getElementById("tooltip_HR_MAX");
-slider_HR_MAX.addEventListener("input", () => {
-    tooltip_HR_MAX.textContent = slider_HR_MAX.value;
-    const percent = (slider_HR_MAX.value - slider_HR_MAX.min) / (slider_HR_MAX.max - slider_HR_MAX.min);
-    tooltip_HR_MAX.style.left = `${percent * 100}%`;
+slider_HR_MAX.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_HR_MAX, tooltip_HR_MAX);
+});
+
+const slider_HR_STD = document.getElementById("slider_HR_STD");
+const tooltip_HR_STD = document.getElementById("tooltip_HR_STD");
+slider_HR_STD.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_HR_STD, tooltip_HR_STD);
+});
+
+const slider_RDW_max = document.getElementById("slider_RDW_max");
+const tooltip_RDW_max = document.getElementById("tooltip_RDW_max");
+slider_RDW_max.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_RDW_max, tooltip_RDW_max);
+});
+
+const slider_RDW_mean = document.getElementById("slider_RDW_mean");
+const tooltip_RDW_mean = document.getElementById("tooltip_RDW_mean");
+slider_RDW_mean.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_RDW_mean, tooltip_RDW_mean);
+});
+
+const slider_RDW_min = document.getElementById("slider_RDW_min");
+const tooltip_RDW_min = document.getElementById("tooltip_RDW_min");
+slider_RDW_min.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_RDW_min, tooltip_RDW_min);
+});
+
+const slider_RDW_std = document.getElementById("slider_RDW_std");
+const tooltip_RDW_std = document.getElementById("tooltip_RDW_std");
+slider_RDW_std.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_RDW_std, tooltip_RDW_std);
 });
 
 const slider_age_adj_comorbidity_score = document.getElementById("slider_age_adj_comorbidity_score");
 const tooltip_age_adj_comorbidity_score = document.getElementById("tooltip_age_adj_comorbidity_score");
-slider_age_adj_comorbidity_score.addEventListener("input", () => {
-    tooltip_age_adj_comorbidity_score.textContent = slider_age_adj_comorbidity_score.value;
-    const percent = (slider_age_adj_comorbidity_score.value - slider_age_adj_comorbidity_score.min) / (slider_age_adj_comorbidity_score.max - slider_age_adj_comorbidity_score.min);
-    tooltip_age_adj_comorbidity_score.style.left = `${percent * 100}%`;
+slider_age_adj_comorbidity_score.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_age_adj_comorbidity_score, tooltip_age_adj_comorbidity_score);
+    //slider_age_adj_comorbidity_score.style.background = `linear-gradient( to right, #22c55e 0%, #22c55e ${percent * 100}%, #1f2937 ${percent * 100}%, #1f2937 100% )`;
+
 });
 
 
+function move_input_range(slider, tooltip) {
+    "use strict";
+    tooltip.textContent = slider.value;
+    const percent = (slider.value - slider.min) / (slider.max - slider.min);
+    tooltip.style.left = `${percent * 100}%`;
+
+}
+
 $("#feature_list").on("click", function () {
+
     $.ajaxSetup({
         headers: {
             'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
         }
     });
     $.ajax({
-        type: "POST", url: window.location.href + "datamanagement/feature_list/", data: {
+        type: "POST", url: window.location.href + "datamangement/feature_list/", data: {
             diagnosis: $("input[name=diagnosis]").val(),
-            age: $("input[name=Age]").val(),
+            AGE: $("input[name=Age]").val(),
             GCS_max: $("input[name=GCS_max]").val(),
             GCS_mean: $("input[name=GCS_mean]").val(),
             Lactate_min: $("input[name=Lactate_min]").val(),
@@ -641,8 +860,6 @@ $("#feature_list").on("click", function () {
             Lactate_mean: $("input[name=Lactate_mean]").val(),
             BUN_min: $("input[name=BUN_min]").val(),
             BUN_mean: $("input[name=BUN_mean]").val(),
-            AG_max: $("input[name=AG_max]").val(),
-            AG_mean: $("input[name=AG_mean]").val(),
             Bilirubin_max: $("input[name=Bilirubin_max]").val(),
             Bilirubin_mean: $("input[name=Bilirubin_mean]").val(),
             AG_MEAN: $("input[name=AG_MEAN]").val(),
@@ -658,16 +875,23 @@ $("#feature_list").on("click", function () {
             RR_MEAN: $("input[name=RR_MEAN]").val(),
             RR_STD: $("input[name=RR_STD]").val(),
             RR_MAX: $("input[name=RR_MAX]").val(),
+            RR_MIN: $("input[name=RR_MIN]").val(),
             TEMP_STD: $("input[name=TEMP_STD]").val(),
             TEMP_MIN: $("input[name=TEMP_MIN]").val(),
             HR_MEAN: $("input[name=HR_MEAN]").val(),
             HR_MAX: $("input[name=HR_MAX]").val(),
+            HR_STD: $("input[name=HR_STD]").val(),
+            RDW_max: $("input[name=RDW_max]").val(),
+            RDW_mean: $("input[name=RDW_mean]").val(),
+            RDW_min: $("input[name=RDW_min]").val(),
+            RDW_std: $("input[name=RDW_std]").val(),
             age_adj_comorbidity_score: $("input[name=age_adj_comorbidity_score]").val(),
 
             csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
         }, dataType: "json", success: function (json_data) {
             console.log(json_data.prediction);
-
+            console.log(json_data.explainability);
+            console.log(json_data.frontend_data);
             const container_prediction = document.getElementById("container_prediction");
             // check if element id_table exist, yes -> insert element on table
             // no -> create new element table
@@ -677,7 +901,6 @@ $("#feature_list").on("click", function () {
                 document.getElementById("table_prediction").remove();
                 document.getElementById("fieldset_prediction").remove();
                 document.getElementById("div_explainability").remove();
-
             }
 
             // Create table element
@@ -761,17 +984,132 @@ $("#feature_list").on("click", function () {
 
             const div_explainability = document.createElement('div');
             div_explainability.setAttribute('id', 'div_explainability');
-            const img = document.createElement("img");
+
+            /*
+            const img = new Image();
             img.src = "http://localhost:8000/static/imgs/shap_summary.png";   // path to your saved image
             img.alt = "SHAP Summary Plot";
-            img.style.width = "40%";              // optional
-
+            img.style.width = "40%";             // optional
+            img.id = "img_explainability";
             div_explainability.appendChild(img);
+            */
+
+            // add table of real feature and value
+
+                        // <details>
+            const details = document.createElement("details");
+            details.style.marginBottom = "10px";
+            // <summary>
+            const summary = document.createElement("summary");
+            summary.style.cursor = "pointer";
+            summary.style.fontWeight = "bold";
+            summary.textContent = `Top Features and value that influence the output of the model. `;
+            //summary.style.backgroundColor = "rgb(248, 249, 251)";
+            summary.style.borderRadius = "5px";
+            summary.classList.add("summary_element");
+            details.appendChild(summary);
+
+            // <table>
+            const table = document.createElement("table");
+            table.border = "1";
+            table.style.marginTop = "8px";
+
+            // Helper to add rows
+            function addRow(feature_name, feature_value) {
+                const tr = document.createElement("tr");
+                const td1 = document.createElement("td");
+                const strong = document.createElement("strong");
+                strong.textContent = feature_name;
+                td1.appendChild(strong);
+
+                // add style for td element for label like "
+                //td1.style.backgroundColor = "rgb(255, 204, 217)";
+
+                // end of style td1
+                const td2 = document.createElement("td");
+                td2.textContent = feature_value;
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+                table.appendChild(tr);
+            }
+            const data_feature = json_data.frontend_data;
+            console.log(data_feature);
+            const div_row = document.createElement('div');
+            div_row.classList.add('row');
+
+            data_feature.feature_name.forEach((name, index) => {
+                addRow(data_feature.feature_name[index], data_feature.feature_value[index]);
+            });
+            details.appendChild(table);
+
+            // Build each column from JSON
+
+            div_explainability.appendChild(details);
+
+            // 1. Convert JSON → array of objects
+
+            // Append to page
             container_explainability.appendChild(div_explainability);
 
+            // Mock data resembling SHAP summary plot
+            const featureNames = json_data.explainability.XGBoost.feature_names;
+            const shapValues = json_data.explainability.XGBoost.shap_values;
+
+            const trace = {
+                x: shapValues,
+                y: featureNames,
+                mode: 'markers',
+                type: 'scatter',
+                marker: {
+                    size: 10,
+                    color: shapValues,
+                    colorscale: [
+                        [0, 'rgb(255, 8, 0)'], // start color
+                        [1, 'rgb(0, 0, 255)'] // end color (blue)
+                    ],
+                    reversescale: true,
+                    colorbar: {
+                        title: 'high shap value'
+                    }
+                }
+            };
+            const layout = {
+
+                height: 550,
+                title: {
+                    text: `SHAP Summary Plot`,
+                    font: {size: 12}
+                },
+                xaxis: {
+                    title: {text: 'SHAP Value (Impact on Model Output)', font: {size: 12}},
+                    tickfont: {size: 10}
+                }, yaxis: {
+                    title: {text: 'Feature', font: {size: 12}},
+                    tickfont: {size: 9},
+                    type: 'category',
+                    automargin: true
+                }, margin: {
+                    l: 150,
+                    r: 50,
+                    t: 50,
+                    b: 50
+                },
+
+
+            };
+            //
+            Plotly.newPlot('shapPlot', [trace], layout, {responsive: true});
+
+            const combined = featureNames.map((name, i) => ({
+                feature: name,
+                shap: shapValues[i]
+            })); // Sort descending by SHAP value
+            combined.sort((a, b) => b.shap - a.shap);
+            console.log(combined);
 
         }, error: function (data) {
 
         }
     });
 });
+
