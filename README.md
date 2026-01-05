@@ -1,3 +1,4 @@
+![Application Screenshot](img_application.JPG)
 # Project Overview
 
 This project aims to predict patient mortality using the MIMIC (Medical Information Mart for Intensive Care) dataset by applying data science and machine learning techniques. The goal is to build an interpretable and deployable model that supports clinical decision-making.
@@ -96,4 +97,3 @@ To ensure model transparency and explainability, the project integrates the SHAP
 
 Overall, the project combines data science, machine learning, explainable AI, and web development to deliver an end-to-end solution for mortality prediction using real-world clinical data.
 
-![Application Screenshot](img_application.JPG)
