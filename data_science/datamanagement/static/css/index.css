@@ -190,6 +190,7 @@ body {
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    border: none;
     outline: none;
     box-sizing: border-box;
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -212,7 +213,7 @@ body {
     background: #fff;
     border: 1px solid #ccc;
     border-radius: 4px;
-    width: 184px;
+    width: 150px;
     overflow-y: auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
     z-index: 10;
@@ -271,7 +272,7 @@ body {
     /* font-size: 1rem; */
     line-height: 1.5;
     background-clip: padding-box;
-    border: 1px solid #ced4da;
+    border: none; /* 1px solid #ced4da; */
     border-radius: .25rem;
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 
@@ -537,7 +538,7 @@ body {
     width: 100%;
 }
 
-#model_results  thead th {
+#model_results thead th {
     background: rgb(246, 51, 102);
     color: #fff;
 }
@@ -546,7 +547,7 @@ body {
     border-top-left-radius: 6px;
 }
 
-#model_results  thead th:last-child {
+#model_results thead th:last-child {
     border-top-right-radius: 6px;
 }
 
@@ -570,7 +571,7 @@ body {
     border-top: 1px solid #e5e7eb;
 }
 
-#model_results  tbody tr:hover {
+#model_results tbody tr:hover {
     background: #f3f4f6;
 }
 
@@ -626,37 +627,32 @@ body {
 
 #tooltip, #tooltip_Age, #tooltip_GCS_max, #tooltip_GCS_mean, #tooltip_Lactate_min,
 #tooltip_Lactate_max, #tooltip_Lactate_mean, #tooltip_BUN_min, #tooltip_BUN_mean,
-#tooltip_AG_max, #tooltip_AG_mean, #tooltip_Bilirubin_max, #tooltip_Bilirubin_mean,
-#tooltip_AG_MEAN, #tooltip_AG_MAX, #tooltip_AG_MEDIAN, #tooltip_AG_MIN, #tooltip_AG_STD,
-#tooltip_SYSBP_MIN, #tooltip_SYSBP_MEAN, #tooltip_SYSBP_STD, #tooltip_DIASBP_MIN,
-#tooltip_DIASBP_MEAN, #tooltip_RR_MEAN, #tooltip_RR_STD, #tooltip_RR_MAX, #tooltip_TEMP_STD,
-#tooltip_TEMP_MIN, #tooltip_HR_MEAN, #tooltip_HR_MAX, #tooltip_age_adj_comorbidity_score
-{
+#tooltip_Bilirubin_max, #tooltip_Bilirubin_mean, #tooltip_AG_MEAN, #tooltip_AG_MAX,
+#tooltip_AG_MEDIAN, #tooltip_AG_MIN, #tooltip_AG_STD, #tooltip_SYSBP_MIN,
+#tooltip_SYSBP_MEAN, #tooltip_SYSBP_STD, #tooltip_DIASBP_MIN, #tooltip_DIASBP_MEAN,
+#tooltip_RR_MEAN, #tooltip_RR_STD, #tooltip_RR_MAX, #tooltip_RR_MIN, #tooltip_TEMP_STD,
+#tooltip_TEMP_MIN, #tooltip_HR_MEAN, #tooltip_HR_MAX, #tooltip_HR_STD, #tooltip_RDW_max,
+#tooltip_RDW_mean, #tooltip_RDW_min, #tooltip_RDW_std, #tooltip_age_adj_comorbidity_score {
     position: absolute;
-    top: 20px;
+    top: 23px;
     /* background: #333; */
     color: rgb(246, 51, 102);
     /* padding: 4px 8px; */
     border-radius: 4px;
     transform: translateX(-50%);
-    font-size: 14px;
+    font-size: 11px;
 }
 
 .input_range {
     width: 200px;
     height: 2px;
-
-
-    background: #333;
-    color: white;
-    height: 2px;
+    /* background: #333; */
+    /* color: white; */
     font-family: inherit;
     font-size: inherit;
     line-height: inherit;
-    height: 2px;
-    width: 200px;
-
 }
+
 #_slider input::-moz-range-thumb {
     -webkit-appearance: none;
     width: 20px;
@@ -669,6 +665,7 @@ body {
 }
 
 .button_feature_element {
+    margin-left: 5px;
     height: 25px;
     font-size: 14px;
     color: #FFFFFF;
@@ -676,21 +673,352 @@ body {
     display: block;
     line-height: 1.5;
     background-clip: padding-box;
-    border: 1px solid #ced4da;
+    border: none; /* 1px solid #ced4da; */
     border-radius: .25rem;
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+
 }
 
 legend {
-  color: white;
-  background-color: rgb(246, 51, 102);
-  padding: 5px 10px;
-  border-radius: 5px;
-  border: 0;
-  font-size: 14px;
+    color: white;
+    background-color: rgb(246, 51, 102);
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 0;
+    font-size: 14px;
 }
 
 .fieldset_model {
     border: solid 1px;
     border-radius: 5px;
 }
+
+/*  for summary element */
+.summary_element {
+    position: relative;
+    display: flex;
+    width: 100%;
+    min-width: 0px;
+    overflow: hidden;
+    font-size: inherit;
+    padding: 0.25rem 0.75rem;
+    min-height: calc(-2px + 2.5rem);
+    -moz-box-align: center;
+    align-items: center;
+    cursor: pointer;
+    list-style-type: none;
+    /* background-color: rgb(248, 249, 251); */
+    border-radius: 0.5rem 0.5rem 0px 0px;
+    transition: border-radius 200ms cubic-bezier(0.23, 1, 0.32, 1), background-color 150ms;
+}
+
+
+input[type="range"] {
+    moz-box-align: center;
+    --value: 50%;
+    /*default fill percentage */
+    -webkit-appearance: none;
+    width: 100%;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(to right,
+    rgb(246, 51, 102) 0%,
+    rgb(246, 51, 102) var(--value),
+    rgba(151, 166, 195, 0.25) var(--value),
+    rgba(151, 166, 195, 0.25) 100%
+    );
+    /*background: linear-gradient(
+            to right,
+            rgb(246, 51, 102) 0%,
+            rgb(246, 51, 102) var(--value),
+            #d1cdcd var(--value),
+            #d1cdcd 100%
+    ); */
+    outline: none;
+    transition: background 450ms ease-in;
+    -webkit-appearance: none;
+}
+/* **/
+/*
+
+input[type="range"] {
+    /* removing default appearance
+
+    -webkit-appearance: none;
+    appearance: none;
+    /* creating a custom design
+    width: 100%;
+    cursor: pointer;
+    outline: none;
+    border-radius: 15px;
+    /*  overflow: hidden;  remove this line*/
+
+    /* New additions
+    height: 2px;
+    background: #ccc;
+}
+*/
+/* Thumb: webkit  kreis von inout type range */
+input[type="range"]::-webkit-slider-thumb {
+
+    /* removing default appearance */
+    -webkit-appearance: none;
+    appearance: none;
+    /* creating a custom design */
+    height: 10px;
+    width: 10px;
+    background-color: rgb(246, 51, 102);
+    border-radius: 50%;
+    border: none;
+
+    /* box-shadow: -407px 0 0 400px #f50; emove this line */
+    transition: .2s ease-in-out;
+}
+
+/* Thumb: Firefox */
+input[type="range"]::-moz-range-thumb {
+    height: 15px;
+    width: 15px;
+    background-color: rgb(246, 51, 102);
+    border-radius: 50%;
+    border: none;
+
+    /* box-shadow: -407px 0 0 400px #f50; emove this line */
+    transition: .2s ease-in-out;
+}
+
+/* Hover, active & focus Thumb: Webkit */
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 0 5px rgba(255, 85, 0, .1)
+}
+
+input[type="range"]:active::-webkit-slider-thumb {
+    box-shadow: 0 0 0 5px rgba(255, 85, 0, .2)
+}
+
+input[type="range"]:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 5px rgba(255, 85, 0, .2)
+}
+
+/* Hover, active & focus Thumb: Firfox */
+
+input[type="range"]::-moz-range-thumb:hover {
+    box-shadow: 0 0 0 10px rgba(255, 85, 0, .1)
+}
+
+input[type="range"]:active::-moz-range-thumb {
+    box-shadow: 0 0 0 13px rgba(255, 85, 0, .2)
+}
+
+input[type="range"]:focus::-moz-range-thumb {
+    box-shadow: 0 0 0 13px rgba(255, 85, 0, .2)
+}
+
+
+/*  */
+
+
+details {
+    position: relative;
+    max-inline-size: 60rem;
+    padding: 1rem;
+    margin-block: 1rem 0;
+    margin-inline: auto;
+    background-image: linear-gradient(to top left, hsl(0deg 100% 95%) 0, rgb(240, 242, 246));
+    /*
+    background-image: linear-gradient(
+            to top left,
+            hsl(260deg 80% 80%) 0,
+            hsl(0deg 100% 95%)
+    ); initial value of  */
+    border: 1px solid hsl(260deg 100% 95%);
+    border-radius: 0.3rem;
+}
+
+summary {
+    padding-inline: 2rem;
+    position: relative;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* Demo Code */
+.details::summary_element {
+    display: block;
+    margin-inline: 2rem;
+    block-size: 0;
+    overflow: hidden;
+    transition-property: block-size, content-visibility;
+    transition-duration: 0.5s;
+    transition-behavior: allow-discrete;
+}
+
+.details[open]::summary_element {
+    /* Fallback for browsers that don't support calc-size() function */
+    block-size: auto;
+
+    /* calc-size() function allows transition to height: auto; */
+    block-size: calc-size(auto, size);
+}
+
+/* List Item ::marker supports only some CSS properties, so we're using ::before pseudo-element instead */
+summary::marker {
+    content: '»';
+    content: none;
+}
+
+summary::before {
+    content: '»';
+    /* position: absolute;  */
+    margin-right: 5px;
+    inset-inline-start: 1rem;
+    inset-block-start: -0.05rem;
+    /* transition: rotate 0.2s; */
+    transition: transform 0.2s ease;
+}
+
+summary[open]::before {
+    transform: rotate(90deg);
+}
+
+.details[open] summary::before {
+    rotate: 90deg;
+    inset-block-start: 0.05rem;
+}
+
+
+#header .mod_navigation ul li a, #header .mod_navigation ul li span {
+    /* height: 40px; */
+    /* display: block; */
+    padding: 5px 18px 0px 18px;
+    font-size: 22px;
+    /* line-height: 22px; */
+    /* font-weight: 200; */
+    /* color: #7d7d88; */
+    /* text-transform: none; */
+    /* font-style: normal; */
+    /* transition: color 800ms; */
+    text-decoration: none;
+}
+
+#header .mod_navigation ul li a.first, #header .mod_navigation ul li span.first {
+    padding-left: 0;
+}
+
+body a {
+    /* color: #dc3317; */
+}
+
+#header .mod_navigation ul.product-navigation li ul li, #header .mod_navigation ul.product-navigation li:hover ul li, #header .mod_navigation ul.product-navigation li.submenu:hover ul li {
+    background: #e3e3e5;
+    padding: 30px 30px 33px 30px;
+    border-width: 0;
+}
+
+.menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1rem;
+}
+
+.menu-item a {
+    font-size: 22px;
+    text-decoration: none;
+    color: #7d7d88;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.menu-item a:hover {
+    /* background-color: #e5e7eb; */
+}
+
+
+/* tab for css */
+.stTabs {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Header bar with tab buttons */
+.stTabs-header {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid #e0e3eb;
+    margin-bottom: 0.75rem;
+}
+
+/* Individual tab button */
+.stTabs-button {
+    position: relative;
+    padding: 0.5rem 0.9rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #4b5563;
+    border-radius: 0.5rem 0.5rem 0 0;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* Hover effect similar to Streamlit */
+.stTabs-button:hover {
+    background-color: #f5f5f7;
+}
+
+/* Active tab */
+.stTabs-button.is-active {
+    color: #111827;
+    font-weight: 600;
+    outline: none;
+
+}
+
+/* Bottom border highlight for active tab */
+.stTabs-button.is-active::after {
+    content: "";
+    position: absolute;
+    left: 0.7rem;
+    right: 0.7rem;
+    bottom: -1px;
+    height: 2px;
+    background: rgb(246, 51, 102); /* Streamlit’s primary accent */
+    border-radius: 999px;
+}
+
+/* Panels */
+.stTabs-body {
+    padding-top: 0.25rem;
+}
+
+.stTabs-panel {
+    display: none;
+}
+
+.stTabs-panel.is-active {
+    display: block;
+}
+
+
+/* table feature element on featur_list url */
+* {
+  box-sizing: border-box;
+}
+
+/* Create two equal columns that floats next to each other */
+.column_table {
+  float: left;
+  padding: 10px;
+  height: 50px; /* Should be removed. Only for demonstration */
+}
+
+/* Clear floats after the columns */
+.row_table:after {
+  content: "";
+  display: table;
+
+}
+
