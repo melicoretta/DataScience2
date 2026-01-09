@@ -628,9 +628,9 @@ body {
 #tooltip, #tooltip_Age, #tooltip_GCS_max, #tooltip_GCS_mean, #tooltip_Lactate_min,
 #tooltip_Lactate_max, #tooltip_Lactate_mean, #tooltip_BUN_min, #tooltip_BUN_mean,
 #tooltip_Bilirubin_max, #tooltip_Bilirubin_mean, #tooltip_AG_MEAN, #tooltip_AG_MAX,
-#tooltip_AG_MEDIAN, #tooltip_AG_MIN, #tooltip_AG_STD, #tooltip_SYSBP_MIN,
+#tooltip_MEANBP_MEAN, #tooltip_AG_MIN, #tooltip_AG_STD, #tooltip_SYSBP_MIN,
 #tooltip_SYSBP_MEAN, #tooltip_SYSBP_STD, #tooltip_DIASBP_MIN, #tooltip_DIASBP_MEAN,
-#tooltip_RR_MEAN, #tooltip_RR_STD, #tooltip_RR_MAX, #tooltip_RR_MIN, #tooltip_TEMP_STD,
+#tooltip_RR_MEAN, #tooltip_MEANBP_MIN, #tooltip_RR_MAX, #tooltip_RR_MIN, #tooltip_TEMP_STD,
 #tooltip_TEMP_MIN, #tooltip_HR_MEAN, #tooltip_HR_MAX, #tooltip_HR_STD, #tooltip_RDW_max,
 #tooltip_RDW_mean, #tooltip_RDW_min, #tooltip_RDW_std, #tooltip_age_adj_comorbidity_score {
     position: absolute;

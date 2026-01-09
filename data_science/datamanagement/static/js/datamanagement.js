@@ -347,7 +347,12 @@ $("#submit_subject_id").on("click", function () {
 
                         // end of style td1
                         const td2 = document.createElement("td");
-                        td2.textContent = feature_value;
+                        if (feature_value === 0) {
+                            td2.textContent = "nan";
+                        } else{
+                            td2.textContent = feature_value;
+
+                        }
                         tr.appendChild(td1);
                         tr.appendChild(td2);
                         table_contributor.appendChild(tr);
@@ -371,7 +376,10 @@ $("#submit_subject_id").on("click", function () {
 
 
                     data_feature.feature_name.forEach((name, index) => {
-                        addRow_feature(data_feature.feature_name[index], cutTo3(data_feature.feature_value[index]));
+                        // save the first 5 item on the table
+                        if (index < 10){
+                            addRow_feature(data_feature.feature_name[index], cutTo3(data_feature.feature_value[index]));
+                        }
 
                     });
                     details_contributor.appendChild(table_contributor);
@@ -654,13 +662,7 @@ slider_AG_MAX.addEventListener("input", e => {
     move_input_range(slider_AG_MAX, tooltip_AG_MAX);
 });
 
-const slider_AG_MEDIAN = document.getElementById("slider_AG_MEDIAN");
-const tooltip_AG_MEDIAN = document.getElementById("tooltip_AG_MEDIAN");
-slider_AG_MEDIAN.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_AG_MEDIAN, tooltip_AG_MEDIAN);
-});
+
 
 const slider_AG_MIN = document.getElementById("slider_AG_MIN");
 const tooltip_AG_MIN = document.getElementById("tooltip_AG_MIN");
@@ -727,13 +729,7 @@ slider_RR_MEAN.addEventListener("input", e => {
     move_input_range(slider_RR_MEAN, tooltip_RR_MEAN);
 });
 
-const slider_RR_STD = document.getElementById("slider_RR_STD");
-const tooltip_RR_STD = document.getElementById("tooltip_RR_STD");
-slider_RR_STD.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_RR_STD, tooltip_RR_STD);
-});
+
 
 const slider_RR_MAX = document.getElementById("slider_RR_MAX");
 const tooltip_RR_MAX = document.getElementById("tooltip_RR_MAX");
@@ -833,7 +829,21 @@ slider_age_adj_comorbidity_score.addEventListener("input", e => {
 
 });
 
+const slider_MEANBP_MEAN = document.getElementById("slider_MEANBP_MEAN");
+const tooltip_MEANBP_MEAN = document.getElementById("tooltip_MEANBP_MEAN");
+slider_MEANBP_MEAN.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_MEANBP_MEAN, tooltip_MEANBP_MEAN);
+});
 
+const slider_MEANBP_MIN = document.getElementById("slider_MEANBP_MIN");
+const tooltip_MEANBP_MIN = document.getElementById("tooltip_MEANBP_MIN");
+slider_MEANBP_MIN.addEventListener("input", e => {
+    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
+    e.target.style.setProperty("--value", percent + "%");
+    move_input_range(slider_MEANBP_MIN, tooltip_MEANBP_MIN);
+});
 function move_input_range(slider, tooltip) {
     "use strict";
     tooltip.textContent = slider.value;
@@ -864,7 +874,6 @@ $("#feature_list").on("click", function () {
             Bilirubin_mean: $("input[name=Bilirubin_mean]").val(),
             AG_MEAN: $("input[name=AG_MEAN]").val(),
             AG_MAX: $("input[name=AG_MAX]").val(),
-            AG_MEDIAN: $("input[name=AG_MEDIAN]").val(),
             AG_MIN: $("input[name=AG_MIN]").val(),
             AG_STD: $("input[name=AG_STD]").val(),
             SYSBP_MIN: $("input[name=SYSBP_MIN]").val(),
@@ -873,7 +882,6 @@ $("#feature_list").on("click", function () {
             DIASBP_MIN: $("input[name=DIASBP_MIN]").val(),
             DIASBP_MEAN: $("input[name=DIASBP_MEAN]").val(),
             RR_MEAN: $("input[name=RR_MEAN]").val(),
-            RR_STD: $("input[name=RR_STD]").val(),
             RR_MAX: $("input[name=RR_MAX]").val(),
             RR_MIN: $("input[name=RR_MIN]").val(),
             TEMP_STD: $("input[name=TEMP_STD]").val(),
@@ -886,6 +894,8 @@ $("#feature_list").on("click", function () {
             RDW_min: $("input[name=RDW_min]").val(),
             RDW_std: $("input[name=RDW_std]").val(),
             age_adj_comorbidity_score: $("input[name=age_adj_comorbidity_score]").val(),
+            MEANBP_MEAN: $("input[name=MEANBP_MEAN]").val(),
+            MEANBP_MIN: $("input[name=MEANBP_MIN]").val(),
 
             csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
         }, dataType: "json", success: function (json_data) {
@@ -995,8 +1005,8 @@ $("#feature_list").on("click", function () {
             */
 
             // add table of real feature and value
+            // <details>
 
-                        // <details>
             const details = document.createElement("details");
             details.style.marginBottom = "10px";
             // <summary>
@@ -1016,6 +1026,7 @@ $("#feature_list").on("click", function () {
 
             // Helper to add rows
             function addRow(feature_name, feature_value) {
+
                 const tr = document.createElement("tr");
                 const td1 = document.createElement("td");
                 const strong = document.createElement("strong");
@@ -1038,7 +1049,10 @@ $("#feature_list").on("click", function () {
             div_row.classList.add('row');
 
             data_feature.feature_name.forEach((name, index) => {
-                addRow(data_feature.feature_name[index], data_feature.feature_value[index]);
+                // save the first 5 item on the table
+                if (index < 10) {
+                    addRow(data_feature.feature_name[index], data_feature.feature_value[index]);
+                }
             });
             details.appendChild(table);
 

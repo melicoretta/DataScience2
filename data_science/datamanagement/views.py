@@ -22,11 +22,13 @@ matplotlib.use("Agg")  # Use non-GUI backend
 import matplotlib.pyplot as plt
 
 model_paths = {
-    "XGBoost": staticfiles_storage.path('model/model_xgb_03_01_2025.joblib'),
+    "XGBoost": staticfiles_storage.path('model/XGBoost_mortality_inhospital.joblib'),
+    #"XGBoost_90days": staticfiles_storage.path('model/XGBoost_mortality_90days.joblib'),
+    #"XGBoost_180days": staticfiles_storage.path('model/XGBoost_mortality_180days.joblib')
 }
 
 def read_feature():
-    feature_path = staticfiles_storage.path('files/third_feature_df_28_12_2025.csv')
+    feature_path = staticfiles_storage.path('files/fourth_feature_df_31_12_2025.csv')
     data_feature = pd.read_csv(feature_path)
     return data_feature
 
@@ -168,10 +170,12 @@ def show_diagnosis(request):
     return render(request, 'datamanagement/base.html')
 
 def to_json_safe(x):
+
     if isinstance(x, (np.float32, np.float64)):
         # Convert nan → None
         return None if math.isnan(float(x)) else float(x)
     if isinstance(x, (np.int32, np.int64)):
+
         return int(x)
     return x
 
@@ -194,7 +198,6 @@ def model_shap(data):
                                    "Bilirubin_mean": data["filter_hadm_id"]["Bilirubin_mean"].iloc[0],
                                    "AG_MEAN": data["filter_hadm_id"]["AG_MEAN"].iloc[0],
                                    "AG_MAX": data["filter_hadm_id"]["AG_MAX"].iloc[0],
-                                   "AG_MEDIAN": data["filter_hadm_id"]["AG_MEDIAN"].iloc[0],
                                    "AG_MIN": data["filter_hadm_id"]["AG_MIN"].iloc[0],
                                    "AG_STD": data["filter_hadm_id"]["AG_STD"].iloc[0],
                                    "SYSBP_MIN": data["filter_hadm_id"]["SYSBP_MIN"].iloc[0],
@@ -204,7 +207,6 @@ def model_shap(data):
                                    "DIASBP_MEAN": data["filter_hadm_id"]["DIASBP_MEAN"].iloc[0],
                                    "AGE": data["filter_hadm_id"]["AGE"].iloc[0],
                                    "RR_MEAN": data["filter_hadm_id"]["RR_MEAN"].iloc[0],
-                                   "RR_STD": data["filter_hadm_id"]["RR_STD"].iloc[0],
                                    "RR_MAX": data["filter_hadm_id"]["RR_MAX"].iloc[0],
                                    "RR_MIN": data["filter_hadm_id"]["RR_MIN"].iloc[0],
                                    "TEMP_STD": data["filter_hadm_id"]["TEMP_STD"].iloc[0],
@@ -216,7 +218,10 @@ def model_shap(data):
                                    "RDW_mean": data["filter_hadm_id"]["RDW_mean"].iloc[0],
                                    "RDW_min": data["filter_hadm_id"]["RDW_min"].iloc[0],
                                    "RDW_std": data["filter_hadm_id"]["RDW_std"].iloc[0],
-                                   "age_adj_comorbidity_score": data["filter_hadm_id"]["age_adj_comorbidity_score"].iloc[0]
+                                   "age_adj_comorbidity_score": data["filter_hadm_id"]["age_adj_comorbidity_score"].iloc[0],
+                                   "MEANBP_MEAN": data["filter_hadm_id"]["MEANBP_MEAN"].iloc[0],
+                                   "MEANBP_MIN": data["filter_hadm_id"]["MEANBP_MIN"].iloc[0]
+
                                    }])
 
         # Convert EVERY cell to numeric
@@ -270,7 +275,6 @@ def model_shap(data):
 
                 value_feature.append(frontend_data[feature].iloc[0])
                 index = index + 1
-
 
             frontend_dict = {
                 "feature_name": [str(v) for v in name_feature],
