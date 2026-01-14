@@ -21,11 +21,7 @@ import math
 matplotlib.use("Agg")  # Use non-GUI backend
 import matplotlib.pyplot as plt
 
-model_paths = {
-    "XGBoost": staticfiles_storage.path('model/XGBoost_mortality_inhospital.joblib'),
-    #"XGBoost_90days": staticfiles_storage.path('model/XGBoost_mortality_90days.joblib'),
-    #"XGBoost_180days": staticfiles_storage.path('model/XGBoost_mortality_180days.joblib')
-}
+
 
 def read_feature():
     feature_path = staticfiles_storage.path('files/fourth_feature_df_31_12_2025.csv')
@@ -148,14 +144,12 @@ def show_diagnosis(request):
         filtered_data = data_all[data_all["Subject_id"].astype(str) == subject_id].sort_values(
             by="Admission_time", ascending=True)
 
-
         data = filtered_data[['Subject_id', 'Hadm_id', 'Diagnosis', 'Gender', 'Birthday', 'Admission_time',
                               'Age', 'Marital_status', 'Died']]
 
         # we fetch the hospital admission time (hadm_id) of the same patient (subject_id)
         for item_hadm_id in data['Hadm_id']:
 
-            #model_patient_data[item_hadm_id].append(filter_hadm_id(item_hadm_id))
             model_patient_data[item_hadm_id].append(model_shap(filter_hadm_id(item_hadm_id)))
 
 
@@ -181,13 +175,22 @@ def to_json_safe(x):
 
 
 def model_shap(data):
-    models = {}
-    name_feature = []
-    value_feature = []
+    model_paths = {
+        "XGBoost": staticfiles_storage.path('model/XGBoost_mortality_inhospital.joblib'),
+        "XGBoost_90_days": staticfiles_storage.path('model/XGBoost_mortality_90days.joblib'),
+        "XGBoost_180_days": staticfiles_storage.path('model/XGBoost_mortality_180days.joblib')
+    }
+    predictions = {}
+    shap_results = {}
+    frontend_dict = {}
 
-    if data['len_hadm_id_result'] > 0:
+    if data['len_hadm_id_result'] == 0:
+        return {'len_hadm_id_result': 0}
 
-        frontend_data = pd.DataFrame([{"GCS_max": data["filter_hadm_id"]["GCS_max"].iloc[0],
+    # ---------------------------------------
+    # 1. Build frontend dataframe
+    # ---------------------------------------
+    frontend_data = pd.DataFrame([{"GCS_max": data["filter_hadm_id"]["GCS_max"].iloc[0],
                                    "GCS_mean": data["filter_hadm_id"]["GCS_mean"].iloc[0],
                                    "Lactate_min": data["filter_hadm_id"]["Lactate_min"].iloc[0],
                                    "Lactate_max": data["filter_hadm_id"]["Lactate_max"].iloc[0],
@@ -219,86 +222,84 @@ def model_shap(data):
                                    "RDW_min": data["filter_hadm_id"]["RDW_min"].iloc[0],
                                    "RDW_std": data["filter_hadm_id"]["RDW_std"].iloc[0],
                                    "age_adj_comorbidity_score": data["filter_hadm_id"]["age_adj_comorbidity_score"].iloc[0],
-                                   "MEANBP_MEAN": data["filter_hadm_id"]["MEANBP_MEAN"].iloc[0],
-                                   "MEANBP_MIN": data["filter_hadm_id"]["MEANBP_MIN"].iloc[0]
-
+                                   "MEANBP_MIN": data["filter_hadm_id"]["MEANBP_MIN"].iloc[0],
+                                   "MEANBP_MEAN": data["filter_hadm_id"]["MEANBP_MEAN"].iloc[0]
                                    }])
+    df = frontend_data.apply(pd.to_numeric, errors="coerce")
 
-        # Convert EVERY cell to numeric
-        df = frontend_data.apply(pd.to_numeric, errors="coerce")
+    # ---------------------------------------
+    # 2. Load all models
+    # ---------------------------------------
 
-        # -----------------------------
-        # 2. Load models
-        # -----------------------------
+    models = {name: joblib.load(path) for name, path in model_paths.items()}
+    print("gel: ", models)
 
-        for name, path in model_paths.items():
-            with open(path, "rb") as f:
-                models[name] = joblib.load(path)
+    # ---------------------------------------
+    # 3. Loop through each model
+    # ---------------------------------------
 
-        # Predict
-        xb_pred = models["XGBoost"].predict_proba(df)[0][1]
-        print("gradient_boosting:", xb_pred)
+    for model_name, pipeline in models.items():
+        print(f"Papal: {model_name}, {pipeline}")
+        # Predict probability
+        pred = pipeline.predict_proba(df)[0][1]
+        predictions[model_name] = float(pred) * 100
 
-        # -----------------------------
-        # 4. SHAP Explainability
-        # -----------------------------
-        shap_results = {}
-        for model_name, model in models.items():
-            # Create SHAP explainer
-            explainer = shap.TreeExplainer(model)
-            # Compute SHAP values
-            shap_values = explainer.shap_values(df)
+        # ---------------------------------------
+        # SHAP Explainability
+        # ---------------------------------------
 
-            # print("shap_values: ", shap_values)
-            # For classifiers → take class 1
-            if isinstance(shap_values, list):
-                shap_values = shap_values[1]
+        tree_model = pipeline.named_steps["model"]
+        X_transformed = pipeline[:-1].transform(df)
+        explainer = shap.TreeExplainer(tree_model)
+        shap_values = explainer.shap_values(X_transformed)
 
-            shap.summary_plot(
-                shap_values,
-                df,
-                feature_names=df.columns,
-                show=False
-            )
-            plt.tight_layout()
+        # For classifiers, shap_values is a list → take class 1
+        if isinstance(shap_values, list):
+            shap_values = shap_values[1]
 
-            plt.savefig(staticfiles_storage.path('imgs/shap_summary.png'), dpi=300)
-            plt.close()
-            # For classifiers, shap_values is a list
+        # Save SHAP summary plot
+        shap.summary_plot(
+            shap_values,
+            df,
+            feature_names=df.columns,
+            show=False )
+        plt.tight_layout()
+        plt.savefig(staticfiles_storage.path(f'imgs/shap_summary_{model_name}.png'),
+                    dpi=300)
+        plt.close()
 
-            # Pair and sort
-            sorted_features = sorted(zip(df.columns.tolist(), shap_values[0].tolist()),
-                                      key=lambda x: x[1], reverse=True)
-            index = 0
-            for feature, value in sorted_features:
-                name_feature.append(feature)
+        # Pair features with SHAP values
+        sorted_features = sorted(
+            zip(df.columns.tolist(),
+                shap_values[0].tolist()),
+            key=lambda x: x[1],
+            reverse=True
+        )
 
-                value_feature.append(frontend_data[feature].iloc[0])
-                index = index + 1
+        # Build frontend feature list for this model
+        name_feature = [f for f, _ in sorted_features]
+        value_feature = [frontend_data[f].iloc[0] for f, _ in sorted_features]
+        frontend_dict[model_name] = {
+            "feature_name": [str(v) for v in name_feature],
+            "feature_value": [to_json_safe(v) for v in value_feature]
+        }
 
-            frontend_dict = {
-                "feature_name": [str(v) for v in name_feature],
-                "feature_value": [to_json_safe(v) for v in value_feature]
-            }
-            shap_results[model_name] = {
-                "feature_names": df.columns.tolist(),
-                "shap_values": shap_values[0].tolist()
-            }
-            print(shap_results[model_name])
-            # -----------------------------
-            # 5. Build JSON response
-            # -----------------------------
-            response = {
-                "prediction": {
-                    "XGBoost": float(xb_pred) * 100
-                },
-                "len_hadm_id_result": data["len_hadm_id_result"],
-                "explainability": shap_results,
-                "frontend_data": frontend_dict
-            }
-            return response
-    else:
-        return {'len_hadm_id_result': data['len_hadm_id_result']}
+        shap_results[model_name] = {
+            "feature_names": df.columns.tolist(),
+            "shap_values": shap_values[0].tolist()
+        }
+
+        # ---------------------------------------
+        # 4. Final JSON response
+        # ---------------------------------------
+    json_response = {
+        "prediction": predictions,
+        "len_hadm_id_result": data["len_hadm_id_result"],
+        "explainability": shap_results,
+        "frontend_data": frontend_dict
+    }
+    print(f"pierre: {json_response}")
+    return json_response
 
 
 def search_diagnosis(request):
@@ -328,40 +329,43 @@ def feature_list(request):
         # -----------------------------
         # 1. Build input dataframe with frontend POST request
         # -----------------------------
-        frontend_data = pd.DataFrame([{"GCS_max": request.POST.get("GCS_max"), "GCS_mean": request.POST.get("GCS_mean"),
-                                   "Lactate_min": request.POST.get("Lactate_min"),
-                                   "Lactate_max": request.POST.get("Lactate_max"),
-                                   "Lactate_mean": request.POST.get("Lactate_mean"),
-                                   "BUN_min": request.POST.get("BUN_min"),
-                                   "BUN_mean": request.POST.get("BUN_mean"),
-                                   "Bilirubin_max": request.POST.get("Bilirubin_max"),
-                                   "Bilirubin_mean": request.POST.get("Bilirubin_mean"),
-                                   "AG_MEAN": request.POST.get("AG_MEAN"),
-                                   "AG_MAX": request.POST.get("AG_MAX"),
-                                   "AG_MEDIAN": request.POST.get("AG_MEDIAN"),
-                                   "AG_MIN": request.POST.get("AG_MIN"),
-                                   "AG_STD": request.POST.get("AG_STD"),
-                                   "SYSBP_MIN": request.POST.get("SYSBP_MIN"),
-                                   "SYSBP_MEAN": request.POST.get("SYSBP_MEAN"),
-                                   "SYSBP_STD": request.POST.get("SYSBP_STD"),
-                                   "DIASBP_MIN": request.POST.get("DIASBP_MIN"),
-                                   "DIASBP_MEAN": request.POST.get("DIASBP_MEAN"),
-                                   "AGE": request.POST.get("age"),
-                                   "RR_MEAN": request.POST.get("RR_MEAN"),
-                                   "RR_STD": request.POST.get("RR_STD"),
-                                   "RR_MAX": request.POST.get("RR_MAX"),
-                                   "RR_MIN": request.POST.get("RR_MIN"),
-                                   "TEMP_STD": request.POST.get("TEMP_STD"),
-                                   "TEMP_MIN": request.POST.get("TEMP_MIN"),
-                                   "HR_MEAN": request.POST.get("HR_MEAN"),
-                                   "HR_MAX": request.POST.get("HR_MAX"),
-                                   "HR_STD": request.POST.get("HR_STD"),
-                                   "RDW_max": request.POST.get("RDW_max"),
-                                   "RDW_mean": request.POST.get("RDW_mean"),
-                                   "RDW_min": request.POST.get("RDW_min"),
-                                   "RDW_std": request.POST.get("RDW_std"),
-                                   "age_adj_comorbidity_score": request.POST.get("age_adj_comorbidity_score")
-                                   }])
+        frontend_data = pd.DataFrame([{"GCS_max": request.POST.get("GCS_max"),
+                                       "GCS_mean": request.POST.get("GCS_mean"),
+                                       "Lactate_min": request.POST.get("Lactate_min"),
+                                       "Lactate_max": request.POST.get("Lactate_max"),
+                                       "Lactate_mean": request.POST.get("Lactate_mean"),
+                                       "BUN_min": request.POST.get("BUN_min"),
+                                       "BUN_mean": request.POST.get("BUN_mean"),
+                                       "Bilirubin_max": request.POST.get("Bilirubin_max"),
+                                       "Bilirubin_mean": request.POST.get("Bilirubin_mean"),
+                                       "AG_MEAN": request.POST.get("AG_MEAN"),
+                                       "AG_MAX": request.POST.get("AG_MAX"),
+                                       "AG_MEDIAN": request.POST.get("AG_MEDIAN"),
+                                       "AG_MIN": request.POST.get("AG_MIN"),
+                                       "AG_STD": request.POST.get("AG_STD"),
+                                       "SYSBP_MIN": request.POST.get("SYSBP_MIN"),
+                                       "SYSBP_MEAN": request.POST.get("SYSBP_MEAN"),
+                                       "SYSBP_STD": request.POST.get("SYSBP_STD"),
+                                       "DIASBP_MIN": request.POST.get("DIASBP_MIN"),
+                                       "DIASBP_MEAN": request.POST.get("DIASBP_MEAN"),
+                                       "AGE": request.POST.get("age"),
+                                       "RR_MEAN": request.POST.get("RR_MEAN"),
+                                       "RR_STD": request.POST.get("RR_STD"),
+                                       "RR_MAX": request.POST.get("RR_MAX"),
+                                       "RR_MIN": request.POST.get("RR_MIN"),
+                                       "TEMP_STD": request.POST.get("TEMP_STD"),
+                                       "TEMP_MIN": request.POST.get("TEMP_MIN"),
+                                       "HR_MEAN": request.POST.get("HR_MEAN"),
+                                       "HR_MAX": request.POST.get("HR_MAX"),
+                                       "HR_STD": request.POST.get("HR_STD"),
+                                       "RDW_max": request.POST.get("RDW_max"),
+                                       "RDW_mean": request.POST.get("RDW_mean"),
+                                       "RDW_min": request.POST.get("RDW_min"),
+                                       "RDW_std": request.POST.get("RDW_std"),
+                                       "age_adj_comorbidity_score": request.POST.get("age_adj_comorbidity_score"),
+                                       "MEANBP_MIN": request.POST.get("MEANBP_MIN"),
+                                       "MEANBP_MEAN": request.POST.get("MEANBP_MEAN")
+                                       }])
 
         for col in frontend_data.columns:
             feature_name.append(col)
@@ -381,6 +385,9 @@ def feature_list(request):
                 models[name] = joblib.load(path)
 
         # Predict
+        print("df.dtypes ", df.dtypes)
+        print("df.columns ", df.columns)
+        print(" df.isna().sum() ", df.isna().sum())
         xb_pred = models["XGBoost"].predict_proba(df)[0][1]
         # print("gradient_boosting:", xb_pred)
 

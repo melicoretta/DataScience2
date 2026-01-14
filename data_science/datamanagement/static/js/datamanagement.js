@@ -192,6 +192,8 @@ function cutTo3(num) {
 }
 
 
+
+
 $("#submit_subject_id").on("click", function () {
     $.ajaxSetup({
         headers: {
@@ -204,12 +206,13 @@ $("#submit_subject_id").on("click", function () {
             subject_id: $("input[name=input_subject_id]").val(),
             csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
         }, dataType: "json", success: function (json_data) {
+            console.log(json_data);
 
             if (json_data.data_lenght === 0) {
                 displayMessage("warning", "subject_id '" + json_data.subject_id + "' not found!");
 
             }
-            console.log(json_data);
+
 
             const data = JSON.parse(json_data.data);
 
@@ -217,6 +220,7 @@ $("#submit_subject_id").on("click", function () {
                 document.getElementById("patient_container").remove();
             }
             const container = document.getElementById("tableContainer");
+
 
             // create element patient_container
             const patient_container = document.createElement('div');
@@ -242,6 +246,9 @@ $("#submit_subject_id").on("click", function () {
                 // <details>
                 const details = document.createElement("details");
                 details.style.marginBottom = "10px";
+
+
+
                 // <summary>
                 const summary = document.createElement("summary");
                 summary.style.cursor = "pointer";
@@ -277,6 +284,10 @@ $("#submit_subject_id").on("click", function () {
                     tr.appendChild(td2);
                     table.appendChild(tr);
                 }
+                // this element is the container of all the 2 table
+                const div_for_table = document.createElement('div');
+                div_for_table.style.display = "flex";
+                details.appendChild(div_for_table);
 
                 addRow("Subject_id", subject);
                 addRow("Hadm_id", hadm_id);
@@ -287,11 +298,40 @@ $("#submit_subject_id").on("click", function () {
                 addRow("Age", age);
                 addRow("Marital_status", marital);
                 addRow("Died", died);
-                details.appendChild(table);
+
+
+                div_for_table.appendChild(table);
 
                 const table_model = document.createElement("table");
                 table_model.border = "1";
                 table_model.style.marginTop = "8px";
+                table_model.classList.add("table_inline");
+                table_model.style.left = "150px";
+                table_model.style.marginLeft = "20px";
+
+                // Create header
+                const thead = document.createElement("thead");
+                const headerRow = document.createElement("tr");
+                ["XGBoost", "XGBoost_90_days", "XGBoost_180_days"].forEach(text => {
+                    const th = document.createElement("th");
+                    th.textContent = text;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                table_model.appendChild(thead);
+
+                // Create body
+                const tbody = document.createElement("tbody");
+
+                function addRow_prediction(values) {
+                    const tr = document.createElement("tr");
+                    values.forEach(val => {
+                        const td = document.createElement("td");
+                        td.textContent = val; tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                }
+
 
                 function addRow_table_model(label, value) {
                     const tr = document.createElement("tr");
@@ -308,22 +348,34 @@ $("#submit_subject_id").on("click", function () {
                     td2.textContent = value;
                     tr.appendChild(td1);
                     tr.appendChild(td2);
-                    table.appendChild(tr);
+                    table_model.appendChild(tr);
                 }
 
                 if (json_data.model_detail[hadm_id][0].len_hadm_id_result === 0) {
-                    addRow_table_model("HADM_ID result ", json_data.model_detail[hadm_id][0].len_hadm_id_result);
+                    addRow("HADM_ID result ", json_data.model_detail[hadm_id][0].len_hadm_id_result);
                     const div_plot = document.createElement('div');
                     div_plot.setAttribute('id', `shapPlot_${hadm_id}`);
-                    details.appendChild(div_plot);
+                    div_for_table.appendChild(div_plot);
+                    details.appendChild(div_for_table);
 
                     patient_container.appendChild(details);
                     container.appendChild(patient_container);
                 } else {
-                    addRow_table_model("Model Prediction ", cutTo3(json_data.model_detail[hadm_id][0].prediction.XGBoost));
+                    console.log("joan ", cutTo3(json_data.model_detail[hadm_id][0].prediction.XGBoost_90_days));
+
+                    const XGBoost_day = cutTo3(json_data.model_detail[hadm_id][0].prediction.XGBoost);
+                    const XGBoost_90_days = cutTo3(json_data.model_detail[hadm_id][0].prediction.XGBoost_90_days);
+                    const XGBoost_180_days = cutTo3(json_data.model_detail[hadm_id][0].prediction.XGBoost_180_days);
+
+                    addRow_prediction([XGBoost_day, XGBoost_90_days, XGBoost_180_days]);
+                    table_model.appendChild(tbody);
+                    div_for_table.appendChild(table_model);
+                    details.appendChild(div_for_table);
+
 
                     const div_plot = document.createElement('div');
                     div_plot.setAttribute('id', `shapPlot_${hadm_id}`);
+
                     details.appendChild(div_plot);
 
                     patient_container.appendChild(details);
@@ -372,85 +424,32 @@ $("#submit_subject_id").on("click", function () {
                     summary_contributor.classList.add("table_inline");
 
                     details_contributor.appendChild(summary_contributor);
-                    data_feature = json_data.model_detail[hadm_id][0].frontend_data;
+                    let feature_XGBoost = json_data.model_detail[hadm_id][0].frontend_data.XGBoost;
+                    let feature_XGBoost_90_days = json_data.model_detail[hadm_id][0].frontend_data.XGBoost_90_days;
+                    let feature_XGBoost_180_days = json_data.model_detail[hadm_id][0].frontend_data.XGBio
 
 
-                    data_feature.feature_name.forEach((name, index) => {
+                    function XGBoost_feature_data (data_feature_XGBoost){
+                        data_feature_XGBoost.feature_name.forEach((name, index) => {
                         // save the first 5 item on the table
-                        if (index < 10){
-                            addRow_feature(data_feature.feature_name[index], cutTo3(data_feature.feature_value[index]));
+                        if (index < 5){
+                            addRow_feature(data_feature_XGBoost.feature_name[index], cutTo3(data_feature_XGBoost.feature_value[index]));
                         }
-
                     });
-                    details_contributor.appendChild(table_contributor);
-                    details.append(details_contributor);
+                    }
 
+                    XGBoost_feature_data
+
+
+                    //details_contributor.appendChild(table_contributor);
+                    details.append(details_contributor);
 
 
                     // add the plot for every diagnosis of this subject_id
                     const featureNames = json_data.model_detail[hadm_id][0].explainability.XGBoost.feature_names;
                     const shapValues = json_data.model_detail[hadm_id][0].explainability.XGBoost.shap_values;
 
-                    const trace = {
-                        x: shapValues,
-                        y: featureNames,
-                        mode: 'markers',
-                        type: 'scatter',
-                        marker: {
-                            size: 7,
-                            color: shapValues,
-                            colorscale: [
-                                [0, 'rgb(255, 8, 0)'], // start color
-                                [1, 'rgb(0, 0, 255)'] // end color (blue)
-                            ],
-                            cmin: Math.min(...shapValues),
-                            cmax: Math.max(...shapValues),
-                            reversescale: true,
-                            colorbar: {
-                                title: {text: 'Low ← SHAP Value → High', font: {size: 11}}
-                            },
-                            tickmode: 'array',
-                            tickvals: [
-                                Math.min(...shapValues),
-                                Math.max(...shapValues)
-                            ],
-                            ticktext: ['Low', '0', 'High'],
-                            ticks: 'outside',
-                            len: 0.8, // height
-                            thickness: 1, // width
-                            thicknessmode: 'pixels',
-                            outlinewidth: 0,
-                            borderwidth: 0,
-                            bgcolor: 'rgba(0,0,0,0)'
-
-                        }
-                    };
-                    const layout = {
-
-                        height: 550,
-                        title: {
-                            text: `SHAP Summary Plot of Subject_id [${subject}], HADM_ID [${hadm_id}]`,
-                            font: {size: 12}
-                        },
-                        xaxis: {
-                            title: {text: 'SHAP Value (Impact on Model Output)', font: {size: 12}},
-                            tickfont: {size: 10}
-                        }, yaxis: {
-                            title: {text: 'Feature', font: {size: 12}},
-                            tickfont: {size: 9},
-                            type: 'category',
-                            automargin: true
-                        }, margin: {
-                            l: 150,
-                            r: 50,
-                            t: 50,
-                            b: 50
-                        },
-
-
-                    };
-                    //
-                    Plotly.newPlot(`shapPlot_${hadm_id}`, [trace], layout, {responsive: true});
+                    renderShapSummaryPlot(shapValues, featureNames, subject, hadm_id);
                 }
 
 
@@ -1049,7 +1048,7 @@ $("#feature_list").on("click", function () {
             div_row.classList.add('row');
 
             data_feature.feature_name.forEach((name, index) => {
-                // save the first 5 item on the table
+                // save the first 10 item on the table
                 if (index < 10) {
                     addRow(data_feature.feature_name[index], data_feature.feature_value[index]);
                 }
@@ -1126,4 +1125,71 @@ $("#feature_list").on("click", function () {
         }
     });
 });
+
+function renderShapSummaryPlot(shapValues, featureNames, subject, hadm_id) {
+
+    const trace = {
+        x: shapValues,
+        y: featureNames,
+        mode: 'markers',
+        type: 'scatter',
+        marker: {
+            size: 7,
+            color: shapValues,
+            colorscale: [
+                [0, 'rgb(255, 8, 0)'],   // red
+                [1, 'rgb(0, 0, 255)']    // blue
+            ],
+            cmin: Math.min(...shapValues),
+            cmax: Math.max(...shapValues),
+            reversescale: true,
+            colorbar: {
+                title: {
+                    text: 'Low ← SHAP Value → High',
+                    font: { size: 11 }
+                }
+            },
+            tickmode: 'array',
+            tickvals: [
+                Math.min(...shapValues),
+                Math.max(...shapValues)
+            ],
+            ticktext: ['Low', '0', 'High'],
+            ticks: 'outside',
+            len: 0.8,
+            thickness: 1,
+            thicknessmode: 'pixels',
+            outlinewidth: 0,
+            borderwidth: 0,
+            bgcolor: 'rgba(0,0,0,0)'
+        }
+    };
+
+    const layout = {
+        height: 550,
+        title: {
+            text: `SHAP Summary Plot of Subject_id [${subject}], HADM_ID [${hadm_id}]`,
+            font: { size: 12 }
+        },
+        xaxis: {
+            title: { text: 'SHAP Value (Impact on Model Output)', font: { size: 12 } },
+            tickfont: { size: 10 }
+        },
+        yaxis: {
+            title: { text: 'Feature', font: { size: 12 } },
+            tickfont: { size: 9 },
+            type: 'category',
+            automargin: true
+        },
+        margin: {
+            l: 150,
+            r: 50,
+            t: 50,
+            b: 50
+        }
+    };
+
+    Plotly.newPlot(`shapPlot_${hadm_id}`, [trace], layout, { responsive: true });
+}
+
 
