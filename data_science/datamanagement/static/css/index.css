@@ -738,6 +738,7 @@ input[type="range"] {
     transition: background 450ms ease-in;
     -webkit-appearance: none;
 }
+
 /* **/
 /*
 
@@ -753,9 +754,9 @@ input[type="range"] {
     border-radius: 15px;
     /*  overflow: hidden;  remove this line*/
 
-    /* New additions
-    height: 2px;
-    background: #ccc;
+/* New additions
+height: 2px;
+background: #ccc;
 }
 */
 /* Thumb: webkit  kreis von inout type range */
@@ -1005,20 +1006,183 @@ body a {
 
 /* table feature element on featur_list url */
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 /* Create two equal columns that floats next to each other */
 .column_table {
-  float: left;
-  padding: 10px;
-  height: 50px; /* Should be removed. Only for demonstration */
+    float: left;
+    padding: 10px;
+    height: 50px; /* Should be removed. Only for demonstration */
 }
 
 /* Clear floats after the columns */
 .row_table:after {
-  content: "";
-  display: table;
+    content: "";
+    display: table;
 
 }
 
+.seperator {
+    border-bottom: 2px solid rgb(246, 51, 102); /* rgba(0, 0, 0, 0.50) */
+    margin-top: 2px;
+    margin-bottom: 5px;
+    /* margin-left: 2%;
+    margin-right: 2%; */
+}
+
+.section_patient {
+    display: inline;
+}
+
+.section_model_prediction {
+    margin-bottom: 10px;
+    width: 1000px;
+    border: 1px solid rgb(240, 242, 246);
+    border-radius: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 40px 0px;
+}
+
+.div_header_XGBoost {
+
+}
+
+.column {
+    /*display: flex; */
+}
+
+.high-risk {
+    background-color: #ffe5e5; /* soft red background */
+    color: #b30000; /* deep red text */
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-right: 300px;
+}
+
+.medium-risk {
+    background-color: #fff4cc; /* soft amber background */
+    color: #b36b00; /* warm amber text */
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-right: 300px;
+}
+
+.low-risk {
+    background-color: #e8f7e8; /* soft green background */
+    color: #1b7d1b; /* deep green text */
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-right: 300px;
+}
+
+
+/* begin patient list */
+.patient-card {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background: #f7f7f7;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.patient-card .icon {
+    font-size: 28px;
+    margin-right: 12px;
+}
+
+.patient-card .name {
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.patient-card .details {
+    color: #555;
+    font-size: 14px;
+}
+
+.feature-table{
+    display: inline;
+    margin-left: 20px;
+}
+/* end patient list */
+
+/* table patient list */
+.table_patient {
+    border: 1px solid #333;
+    border-collapse: collapse;
+}
+.table_patient th, .table_patient td {
+    border: 1px solid #333;
+    padding: 6px 10px;
+    margin-right: 5px;
+}
+
+/* begin table_patient */
+#table_patient tr {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+#table_patient tr:hover {
+      background-color: rgb(240, 242, 246);;
+    /* light blue hover */
+}
+#table_patient td, #table_patient th {
+    padding: 4px 6px;
+    /* border: 1px solid #ccc; */
+}
+/* end table_patient */
+
+/* begin table scrollbar*/
+#table_patient {
+    max-height: 450px;
+    /* adjust height */
+    overflow-y: auto;
+    /* vertical scroll */
+    overflow-x: auto;
+    /* horizontal scroll if needed
+    border: 1px solid #ccc;*/
+    /* optional border */
+}
+#table_patient {
+    width: 40%;
+    border-collapse: collapse;
+    overflow-y: auto; /* vertical scroll */
+    overflow-x: auto;  /* horizontal scroll if needed */
+}
+#table_patient th, #table_patient td {
+    /*padding: 8px 12px;
+    border: 1px solid #ccc; */
+}
+/* end table scrollbar*/
+
+/* begin patient table schrollbar */
+.table-scroll {
+    max-height: 450px;
+    /* fixed height */
+    overflow-y: scroll; /* vertical scroll */
+    overflow-x: auto; /* horizontal scroll if needed */
+    border: 1px solid #ccc;
+    max-width: 500px;
+    border-radius: 5px;
+}
+.table-scroll table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.table-scroll th, .table-scroll td {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+}
+/* end patient table schrollbar */
+
+.table-scroll, .contributor{
+    display: inline;
+}

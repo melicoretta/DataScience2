@@ -17,19 +17,29 @@ from collections import defaultdict
 from django.views.decorators.csrf import csrf_exempt
 import numpy as np
 import math
+import ast
 
 matplotlib.use("Agg")  # Use non-GUI backend
 import matplotlib.pyplot as plt
 
+def read_new_patient(file):
+    with open(file, "r") as f:
+
+        data = json.load(f)  # data is a list of patient objects
+    return data
+
+new_patient = read_new_patient(staticfiles_storage.path('files/insurance_data.json'))
 
 
-def read_feature():
-    feature_path = staticfiles_storage.path('files/fourth_feature_df_31_12_2025.csv')
+
+
+def read_feature(file):
+    feature_path = file
     data_feature = pd.read_csv(feature_path)
     return data_feature
 
 
-model_feature = read_feature()
+model_feature = read_feature(staticfiles_storage.path('files/fourth_feature_df_31_12_2025.csv'))
 
 
 def filter_hadm_id(hadm_id):
@@ -84,7 +94,8 @@ def read_patient_data():
     merged_data.loc[merged_data["AGE"] > 89, "AGE"] = 90
 
     merged_data.rename(columns={"ROW_ID": "Row_id", "SUBJECT_ID": "Subject_id",
-                                "HADM_ID": "Hadm_id", "DOB": "Birthday",
+                                "HADM_ID": "Hadm_id", "DOB": "Birthday", "RELIGION": "Religion",
+                                "LANGUAGE": "Language", "INSURANCE": "Insurance",
                                 "DIAGNOSIS": "Diagnosis", "GENDER": "Gender", "ADMITTIME": "Admission_time",
                                 "AGE": "Age", "MARITAL_STATUS": "Marital_status", "HOSPITAL_EXPIRE_FLAG": "Died"},
                        inplace=True)
@@ -98,6 +109,14 @@ admission_data = read_admission()
 
 def index_patient_data(request):
     return render(request, 'datamanagement/base.html')
+
+
+def hospital_adm_id(hadm_id):
+    filter = df[hadm_id]
+
+    filter[[]]
+    return filter
+
 
 
 def search_row_id(request):
@@ -143,43 +162,53 @@ def show_diagnosis(request):
 
         filtered_data = data_all[data_all["Subject_id"].astype(str) == subject_id].sort_values(
             by="Admission_time", ascending=True)
+        last_admission = filtered_data.iloc[-1]
+
+        # Get the last admission_time
+
+        data_last_admission = last_admission[
+            ['Subject_id', 'Hadm_id', 'Diagnosis', 'Gender', 'Birthday', 'Admission_time',
+             'Age', 'Marital_status', 'Language', 'Insurance', 'Religion', 'Died']
+        ]
 
         data = filtered_data[['Subject_id', 'Hadm_id', 'Diagnosis', 'Gender', 'Birthday', 'Admission_time',
-                              'Age', 'Marital_status', 'Died']]
+                              'Age', 'Marital_status', 'Language', 'Insurance', 'Religion', 'Died']]
 
         # we fetch the hospital admission time (hadm_id) of the same patient (subject_id)
         for item_hadm_id in data['Hadm_id']:
-
             model_patient_data[item_hadm_id].append(model_shap(filter_hadm_id(item_hadm_id)))
-
 
         context = {
             "subject_id": subject_id,
             "data": data.to_json(),
             'data_lenght': len(data),
+            'patient_data': data_last_admission.to_json(),
             "model_detail": model_patient_data
         }
 
         return JsonResponse(context, safe=False)
     return render(request, 'datamanagement/base.html')
 
-def to_json_safe(x):
+def get_patient(subject_id):
+    data = new_patient
+    for item in data:
 
+        if item["Subject_id"] == subject_id:
+            return item
+            return None
+
+
+
+def to_json_safe(x):
     if isinstance(x, (np.float32, np.float64)):
         # Convert nan → None
         return None if math.isnan(float(x)) else float(x)
     if isinstance(x, (np.int32, np.int64)):
-
         return int(x)
     return x
 
 
 def model_shap(data):
-    model_paths = {
-        "XGBoost": staticfiles_storage.path('model/XGBoost_mortality_inhospital.joblib'),
-        "XGBoost_90_days": staticfiles_storage.path('model/XGBoost_mortality_90days.joblib'),
-        "XGBoost_180_days": staticfiles_storage.path('model/XGBoost_mortality_180days.joblib')
-    }
     predictions = {}
     shap_results = {}
     frontend_dict = {}
@@ -221,7 +250,8 @@ def model_shap(data):
                                    "RDW_mean": data["filter_hadm_id"]["RDW_mean"].iloc[0],
                                    "RDW_min": data["filter_hadm_id"]["RDW_min"].iloc[0],
                                    "RDW_std": data["filter_hadm_id"]["RDW_std"].iloc[0],
-                                   "age_adj_comorbidity_score": data["filter_hadm_id"]["age_adj_comorbidity_score"].iloc[0],
+                                   "age_adj_comorbidity_score":
+                                       data["filter_hadm_id"]["age_adj_comorbidity_score"].iloc[0],
                                    "MEANBP_MIN": data["filter_hadm_id"]["MEANBP_MIN"].iloc[0],
                                    "MEANBP_MEAN": data["filter_hadm_id"]["MEANBP_MEAN"].iloc[0]
                                    }])
@@ -262,7 +292,7 @@ def model_shap(data):
             shap_values,
             df,
             feature_names=df.columns,
-            show=False )
+            show=False)
         plt.tight_layout()
         plt.savefig(staticfiles_storage.path(f'imgs/shap_summary_{model_name}.png'),
                     dpi=300)
@@ -298,10 +328,30 @@ def model_shap(data):
         "explainability": shap_results,
         "frontend_data": frontend_dict
     }
-    print(f"pierre: {json_response}")
+
     return json_response
 
+def search_new_patient(request):
+    print("search_new_patient")
+    print(request.GET.get('term', None))
+    data = new_patient
+    df = pd.DataFrame(data)
+    if request.method == "GET":
+        subject_id = request.GET.get('term', None)
+        print(subject_id)
+        if subject_id is not None and subject_id != '':
+            result = df[df['Subject_id'].astype(str).str.lower().str.contains(subject_id, case=False, na=False)
+            ].drop_duplicates(subset="Subject_id")
+            print("result", result)
+            data_item = result[:5]
+            json_data = data_item["Subject_id"].to_json()
+            print("json data: ", json_data)
+            return JsonResponse(json_data, safe=False)
 
+    return render(request, 'datamanagement/base.html')
+
+
+    return render(request, 'datamanagement/base.html')
 def search_diagnosis(request):
     data_all = patient_data
 
@@ -315,12 +365,14 @@ def search_diagnosis(request):
             data_item = result[:5]
             json_data = data_item["Diagnosis"].to_json()
 
-            return JsonResponse(json_data, safe=False)
+            return JsonResponse(json_data, orient="records")
 
     return render(request, 'datamanagement/base.html')
 
 
 def feature_list(request):
+    print("feature_list function: ")
+    patient_data = get_patient(request.POST.get("subject_id"))
     models = {}
     feature_value = []
     feature_name = []
@@ -339,8 +391,8 @@ def feature_list(request):
                                        "Bilirubin_max": request.POST.get("Bilirubin_max"),
                                        "Bilirubin_mean": request.POST.get("Bilirubin_mean"),
                                        "AG_MEAN": request.POST.get("AG_MEAN"),
-                                       "AG_MAX": request.POST.get("AG_MAX"),
                                        "AG_MEDIAN": request.POST.get("AG_MEDIAN"),
+                                       "AG_MAX": request.POST.get("AG_MAX"),
                                        "AG_MIN": request.POST.get("AG_MIN"),
                                        "AG_STD": request.POST.get("AG_STD"),
                                        "SYSBP_MIN": request.POST.get("SYSBP_MIN"),
@@ -348,9 +400,8 @@ def feature_list(request):
                                        "SYSBP_STD": request.POST.get("SYSBP_STD"),
                                        "DIASBP_MIN": request.POST.get("DIASBP_MIN"),
                                        "DIASBP_MEAN": request.POST.get("DIASBP_MEAN"),
-                                       "AGE": request.POST.get("age"),
+                                       "AGE": patient_data["Age"],
                                        "RR_MEAN": request.POST.get("RR_MEAN"),
-                                       "RR_STD": request.POST.get("RR_STD"),
                                        "RR_MAX": request.POST.get("RR_MAX"),
                                        "RR_MIN": request.POST.get("RR_MIN"),
                                        "TEMP_STD": request.POST.get("TEMP_STD"),
@@ -371,7 +422,7 @@ def feature_list(request):
             feature_name.append(col)
             feature_value.append(frontend_data[col].iloc[0])
 
-            #data_to_send[col] = frontend_data[col].iloc[0]
+            # data_to_send[col] = frontend_data[col].iloc[0]
 
         # Convert EVERY cell to numeric
         df = frontend_data.apply(pd.to_numeric, errors="coerce")
@@ -436,8 +487,8 @@ def feature_list(request):
 
             """
             # Pair and sort
-            sorted_features = sorted(zip(df.columns.tolist(),shap_values[0].tolist()),
-                                      key=lambda x: x[1], reverse=True)
+            sorted_features = sorted(zip(df.columns.tolist(), shap_values[0].tolist()),
+                                     key=lambda x: x[1], reverse=True)
             index = 0
             for feature, value in sorted_features:
                 feature_name[index] = feature
@@ -458,15 +509,79 @@ def feature_list(request):
             # 5. Build JSON response
             # -----------------------------
 
-
             response = {
                 "prediction": {
                     "XGBoost": float(xb_pred)
                 },
                 "explainability": shap_results,
-                "frontend_data":  frontend_dict
+                "frontend_data": frontend_dict
 
             }
 
             return JsonResponse(response, safe=False)
+    return render(request, 'datamanagement/base.html')
+
+
+def patient_list(request):
+    return render(request, 'datamanagement/base.html')
+
+
+def parse_prediction(x):
+    # Convert prediction string → real dict
+    if pd.isna(x) or x == "":
+        return None
+    return ast.literal_eval(x)
+
+
+def patient_list(request):
+    patient_list = read_feature(staticfiles_storage.path('files/patient_prediction.csv'))
+
+    if request.method == "GET" and request.headers.get("x-requested-with") == "XMLHttpRequest":
+        patient_list["prediction_dict"] = patient_list["prediction"].apply(parse_prediction)  # Extract XGBoost value
+        patient_list["XGBoost_value"] = patient_list["prediction_dict"].apply(
+            lambda d: d.get("XGBoost") if isinstance(d, dict) else None
+        )  # Sort by XGBoost descending
+        df_sorted = patient_list.sort_values("XGBoost_value", ascending=False)
+        print("df_sorted: ", df_sorted)
+        context = {
+            'patient_data': df_sorted.to_json(orient="records"),
+            'image_url': 'http://127.0.0.1:8000/static/imgs/medical_illness.png'
+        }
+        print(len(df_sorted))
+        return JsonResponse(context, safe=False)
+
+    return render(request, 'datamanagement/base.html')
+
+
+def load_hadm_data(request):
+    data_all = patient_data
+    model_patient_data = defaultdict(list)
+    if request.method == "GET" and request.headers.get("x-requested-with") == "XMLHttpRequest":
+        print("load_hadm_data: ", request.GET)
+
+        subject_id = request.GET.get("subject_id")
+        hadm_string = request.GET.get("hadm_id")
+        hadm_id = hadm_string.split(":")[1].strip()
+
+
+        filtered_data = data_all[(data_all.Subject_id.astype(str) == subject_id) &
+                                 (data_all.Hadm_id.astype(str) == hadm_id)
+                                 ]
+
+        data = filtered_data[['Subject_id', 'Hadm_id', 'Diagnosis', 'Gender', 'Birthday', 'Admission_time',
+                              'Age', 'Marital_status', 'Language', 'Insurance', 'Religion', 'Died']]
+
+        # we fetch the hospital admission time (hadm_id) of the same patient (subject_id)
+        for item_hadm_id in data['Hadm_id']:
+            model_patient_data[item_hadm_id].append(model_shap(filter_hadm_id(item_hadm_id)))
+
+        context = {
+            "subject_id": subject_id,
+            "data": data.to_json(orient="records"),
+            'data_lenght': len(data),
+            "model_detail": model_patient_data
+        }
+
+        return JsonResponse(context, safe=False)
+
     return render(request, 'datamanagement/base.html')

@@ -111,20 +111,16 @@
         <form id="form_subject_id" name="form_subject_id" action="." method="POST">
             {% csrf_token %}
             <div class="submit_button inline_element">
-
-
                 <!-- Autocomplete results -->
-
             </div>
             <!--
                         <div class="slider-container">
                             <label for="range">Value: <span id="value">50</span></label>
                             <input type="range" id="range" min="0" max="100" value="50">
                         </div>
-
-
                           new slider bar -->
             <br>
+            <!--
             <div class="autocomplete-container element_diagnosis">
 
                 <label class="autocomplete-label" for="input_subject_id">Diagnosis</label>
@@ -138,18 +134,35 @@
                         autocomplete="off"
                 />
 
-                <!-- Autocomplete results -->
+                /* Autocomplete results */
                 <ul id="list_diagnosis_id" class="autocomplete-list"></ul>
             </div>
 
-            <br>
+            <br> -->
+            <div class="autocomplete-container element_diagnosis">
 
+                <label class="autocomplete-label" for="input_subject_id">new Subject_id</label>
+                <input
+                        type="text"
+                        id="input_new_patient_id"
+                        class="autocomplete-input element_diagnosis"
+                        name="new_patient_id"
+                        value=""
+                        placeholder="search new patient..."
+                        autocomplete="off"
+                />
+
+                <!-- Autocomplete results -->
+                <ul id="list_new_patient_id" class="autocomplete-list"></ul>
+            </div>
+
+            <br>
 
             <div class="feature_element" style="margin-left: 5px;">
                 <div class="range-tooltip">
                     <label class="autocomplete-label" for="">Age</label>
 
-                    <input id="slider_Age" style#="accent-color: #2ecc71" class="input_range" name="Age" type="range"
+                    <input id="slider_Age" style="accent-color: #2ecc71" class="input_range" name="Age" type="range"
                            min="18" max="90" value="54"
                            step="1">
                     <div id="tooltip_Age" style="left: 50%;">54</div>
@@ -419,15 +432,17 @@
                 <div class="range-tooltip">
                     <label class="autocomplete-label" for="">MEANBP_MIN</label>
 
-                    <input id="slider_MEANBP_MIN" name="MEANBP_MIN" class="input_range" type="range" min="0.20" max="107.33"
+                    <input id="slider_MEANBP_MIN" name="MEANBP_MIN" class="input_range" type="range" min="0.20"
+                           max="107.33"
                            value="53.765" step="0.01">
                     <div id="tooltip_MEANBP_MIN" style="left: 50%;">53.765</div>
                 </div>
                 <br>
-                 <div class="range-tooltip">
+                <div class="range-tooltip">
                     <label class="autocomplete-label" for="">MEANBP_MEAN</label>
 
-                    <input id="slider_MEANBP_MEAN" name="MEANBP_MEAN" class="input_range" type="range" min="17.42" max="130.018"
+                    <input id="slider_MEANBP_MEAN" name="MEANBP_MEAN" class="input_range" type="range" min="17.42"
+                           max="130.018"
                            value="73.719" step="0.01">
                     <div id="tooltip_MEANBP_MEAN" style="left: 50%;">73.719</div>
                 </div>
@@ -461,17 +476,49 @@
     <br>
     <div class="stTabs">
         <div class="stTabs-header">
-            <button class="stTabs-button is-active" data-tab="tab-1"> 📈 Patient Data</button>
+            <button class="stTabs-button is-active" data-tab="tab-1"> 📈 Medical Records</button>
             <button class="stTabs-button" data-tab="tab-2"> 🧠 Model and Explainability</button>
-            <button class="stTabs-button" data-tab="tab-3"> 📝 About the Model</button>
+            <button class="stTabs-button" data-tab="tab-3"> 🏥 Patient list</button>
+            <button class="stTabs-button" data-tab="tab-4"> 📝 About the Model</button>
         </div>
         <div class="stTabs-body">
             <div id="tab-1" class="stTabs-panel is-active">
                 <!-- Content of "Risk Prediction" -->
-                <p>Risk prediction content here…</p>
-                <h3>Patient Data Table</h3>
-                <div id="tableContainer"></div>
+
+                <div id="tableContainer">
+                <select id="myDropdown" hidden></select>
+
+                </div>
                 <br>
+                <div id="patient_container" style="display: flex; flex-direction: column;">
+                    <div id="patient_info" class="patient_info" style="display: flex; flex-direction: row;">
+                        <div id="section_details" class="section_patient column row" style=" background-color: white; margin-bottom: 10px; width: 400px; border: 1px solid rgb(240, 242, 246); border-radius: 5px;
+                                    padding-left: 5px; padding-right: 5px; box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 40px 0px;">
+                            <div id="header_patient" style="background-color: white;">
+                                <h3 class="header_patient_data" style="margin-right: 2%;"> Patient Data</h3>
+                                <h7 style="margin-right: 2%; color: grey;">Personal Information</h7>
+                                <div class="seperator"></div>
+                            </div>
+                            <div id="personal_info" style="display: flex">
+
+                            </div>
+                        </div>
+                        <div id="section_diagnosis" class="section_patient row" style=" background-color: white; margin-bottom: 10px; width: 600px; border: 1px solid rgb(240, 242, 246); border-radius: 5px;
+                                    padding-left: 5px; padding-right: 5px; margin-left: 10px; box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 40px 0px;">
+
+                            <div style="background-color: white;">
+                                <h3 class="header_patient_data" style="margin-right: 2%;"> Medical Data</h3>
+                                <h7 style="margin-right: 2%; color: grey;">Patient Diagnosis</h7>
+                                <div class="seperator"></div>
+                            </div>
+
+                            <div id="diagnosis_data" style="display: flex">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
             </div>
             <div id="tab-2" class="stTabs-panel">
@@ -482,7 +529,33 @@
                 <div id="container_explainability"></div>
                 <div id="shapPlot" style="width:80%;height:600px;"></div>
             </div>
-            <div id="tab-3" class="stTabs-panel">
+
+            <div id="tab-3" class="stTabs-panel" >
+                <!-- Content of "About the Model" -->
+
+                <div style="display: flex; flex-direction: row;">
+
+
+                <div class="table-scroll" id="patient_list">
+
+                <table id="table_patient" class="patient-table" style="display: inline">
+                    <tr>
+                        <th></th>
+                        <th>Subject_id</th>
+                        <th>Hadm_id</th>
+                        <th>Age</th>
+                        <th>Actual Prediction</th>
+                        <th>90-Days</th>
+                        <th>180-Days</th>
+                    </tr>
+                </table>
+
+                    </div>
+                    <div id="div_contributor" class="contributor"><p id="contributor_subject_id"></p> </div>
+            </div>
+            </div>
+
+            <div id="tab-4" class="stTabs-panel">
                 <!-- Content of "About the Model" -->
                 <p>About the model content here…</p>
             </div>
