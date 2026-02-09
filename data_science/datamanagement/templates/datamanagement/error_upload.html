@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Multimodal</title>
+    <link rel="shortcut icon" type="image/png" sizes="250x250" href="{% static 'imgs/logos/tu_logo.png' %}">
+
+    <style>
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+/* Set a style for all buttons */
+.bestätigenbtn, .cancelbtn {
+background: darkblue !important;
+  color: white;
+  padding: 3px 2px;
+  margin: 7px 0;
+  border: none;
+  cursor: pointer;
+  width: 50%;
+  opacity: 0.9;
+  height: 35px;
+  border-radius: 5px;
+  text-align: center;
+
+}
+
+#key {
+height: 35px;
+}
+button:hover {
+  opacity:1;
+}
+
+/* Float cancel and delete buttons and add an equal width */
+.cancelbtn, .bestätigenbtn {
+  float: left;
+  width: 50%;
+}
+
+
+/* Add a color to the delete button */
+.bestätigenbtn {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Add padding and center-align text to the container */
+.container {
+  padding: 16px;
+  text-align: center;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: #474e5d;
+  padding-top: 50px;
+
+    -webkit-box-shadow: 0px 0px 40px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 40px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 40px 0px rgba(0,0,0,0.75);
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 30%; /* Could be more or less, depending on screen size */
+  border-radius: 5px;
+
+}
+
+/* Style the horizontal ruler */
+hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+}
+
+/* The Modal Close Button (x) */
+.close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #f1f1f1;
+}
+
+.close:hover,
+.close:focus {
+  color: #f44336;
+  cursor: pointer;
+}
+
+/* Clear floats */
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Change styles for cancel button and delete button on extra small screens */
+@media screen and (max-width: 300px) {
+  .cancelbtn, .bestätigenbtn {
+     width: 100%;
+  }
+}
+
+
+    </style>
+</head>
+<body>
+
+
+<span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">×</span>
+<form class="modal-content" action="" method="post">
+                {% csrf_token %}
+
+    <div class="container">
+        <h1> uncorrect file format</h1>
+        {% if error_upload_msg %}
+            <p style="float:left;margin-left:20px;">{{ error_upload_msg }} </p>
+
+        {% endif %}
+
+        <div style="margin-left:100px;" class="clearfix" >
+            <a  href="{% url 'datamanagement:index' %}"><input  class="cancelbtn" value="Cancel"></a>
+
+        </div>
+    </div>
+</form>
+</div>
+
+
+
+
+
+</body>
+</html>
+
+
+

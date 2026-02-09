@@ -26,7 +26,7 @@ from sklearn.metrics import roc_auc_score, average_precision_score, classificati
 
 
 # Read csv files
-df= pd.read_csv("C:\\tu_project\\DataScience2\\data_science\\datamanagement\\static\\files\\fourth_feature_df_31_12_2025.csv")
+df= pd.read_csv("C:\\tu_project\\DataScience2\\data_science\\datamanagement\\static\\files\\fifth_feature_df_14_01_2026.csv")
 df.head(10)
 
 
@@ -315,7 +315,7 @@ shap.summary_plot(shap_values, X_train, plot_type="bar")
 
 #joblib file of final model
 
-joblib.dump(final_model, "C:\\tu_project\\DataScience2\\data_science\\datamanagement\\static\\model\\XGBoost_mortality_inhospital.joblib")
+joblib.dump(final_model, "C:\\tu_project\\DataScience2\\data_science\\datamanagement\\static\\model\\XGBoost.joblib")
 
 
 #pkl file of final model

@@ -1,0 +1,282 @@
+{
+  "patient_id": "161941",
+  "hadm_id": "0002",
+  "admission_time": "2025-01-07T10:30:00",
+  "current_time": "2025-01-09T12:30:00",
+  "date_of_birth": "1994-01-07T00:00:00",
+  "age_adj_comorbidity_score": 0.0,
+  "measurements": [
+    {
+      "timestamp": "2025-01-07T10:30:00",
+      "heart_rate": 125.0,
+      "systolic_bp": 135.0,
+      "diastolic_bp": 90.0,
+      "mean_bp": 100.0,
+      "respiratory_rate": 29.0,
+      "temperature": 37.2
+    },
+    {
+      "timestamp": "2025-01-07T12:30:00",
+      "heart_rate": 120.0,
+      "systolic_bp": 133.0,
+      "diastolic_bp": 89.0,
+      "mean_bp": 99.0,
+      "respiratory_rate": 28.0,
+      "temperature": 37.1
+    },
+    {
+      "timestamp": "2025-01-07T14:30:00",
+      "heart_rate": 118.14,
+      "systolic_bp": 135.88,
+      "diastolic_bp": 90.43,
+      "mean_bp": 99.95,
+      "respiratory_rate": 28.41,
+      "temperature": 37.0
+    },
+    {
+      "timestamp": "2025-01-07T16:30:00",
+      "heart_rate": 116.14,
+      "systolic_bp": 133.88,
+      "diastolic_bp": 89.43,
+      "mean_bp": 98.95,
+      "respiratory_rate": 27.41,
+      "temperature": 36.9
+    },
+    {
+      "timestamp": "2025-01-07T18:30:00",
+      "heart_rate": 114.14,
+      "systolic_bp": 131.88,
+      "diastolic_bp": 88.43,
+      "mean_bp": 97.95,
+      "respiratory_rate": 26.41,
+      "temperature": 36.8
+    },
+    {
+      "timestamp": "2025-01-07T20:30:00",
+      "heart_rate": 112.14,
+      "systolic_bp": 130.88,
+      "diastolic_bp": 87.43,
+      "mean_bp": 96.95,
+      "respiratory_rate": 25.41,
+      "temperature": 36.8
+    },
+    {
+      "timestamp": "2025-01-07T22:30:00",
+      "heart_rate": 110.14,
+      "systolic_bp": 129.88,
+      "diastolic_bp": 86.43,
+      "mean_bp": 95.95,
+      "respiratory_rate": 24.41,
+      "temperature": 36.7
+    },
+    {
+      "timestamp": "2025-01-08T00:30:00",
+      "heart_rate": 108.14,
+      "systolic_bp": 128.88,
+      "diastolic_bp": 85.43,
+      "mean_bp": 94.95,
+      "respiratory_rate": 23.91,
+      "temperature": 36.7
+    },
+    {
+      "timestamp": "2025-01-08T02:30:00",
+      "heart_rate": 107.14,
+      "systolic_bp": 127.88,
+      "diastolic_bp": 84.43,
+      "mean_bp": 93.95,
+      "respiratory_rate": 23.41,
+      "temperature": 36.6
+    },
+    {
+      "timestamp": "2025-01-08T04:30:00",
+      "heart_rate": 106.14,
+      "systolic_bp": 126.88,
+      "diastolic_bp": 83.43,
+      "mean_bp": 92.95,
+      "respiratory_rate": 23.41,
+      "temperature": 36.6
+    },
+    {
+      "timestamp": "2025-01-08T06:30:00",
+      "heart_rate": 105.14,
+      "systolic_bp": 125.88,
+      "diastolic_bp": 82.43,
+      "mean_bp": 91.95,
+      "respiratory_rate": 22.91,
+      "temperature": 36.5
+    },
+    {
+      "timestamp": "2025-01-08T08:30:00",
+      "heart_rate": 104.14,
+      "systolic_bp": 124.88,
+      "diastolic_bp": 81.43,
+      "mean_bp": 90.95,
+      "respiratory_rate": 22.41,
+      "temperature": 36.5
+    },
+    {
+      "timestamp": "2025-01-08T10:30:00",
+      "heart_rate": 103.14,
+      "systolic_bp": 123.88,
+      "diastolic_bp": 80.43,
+      "mean_bp": 89.95,
+      "respiratory_rate": 21.91,
+      "temperature": 36.5
+    },
+    {
+      "timestamp": "2025-01-08T12:30:00",
+      "heart_rate": 102.14,
+      "systolic_bp": 122.88,
+      "diastolic_bp": 79.43,
+      "mean_bp": 88.95,
+      "respiratory_rate": 21.41,
+      "temperature": 36.4
+    },
+    {
+      "timestamp": "2025-01-08T14:30:00",
+      "heart_rate": 101.14,
+      "systolic_bp": 121.88,
+      "diastolic_bp": 78.43,
+      "mean_bp": 87.95,
+      "respiratory_rate": 20.91,
+      "temperature": 36.4
+    },
+    {
+      "timestamp": "2025-01-08T16:30:00",
+      "heart_rate": 100.14,
+      "systolic_bp": 120.88,
+      "diastolic_bp": 77.43,
+      "mean_bp": 86.95,
+      "respiratory_rate": 20.41,
+      "temperature": 36.4
+    },
+    {
+      "timestamp": "2025-01-08T18:30:00",
+      "heart_rate": 99.14,
+      "systolic_bp": 119.88,
+      "diastolic_bp": 76.43,
+      "mean_bp": 85.95,
+      "respiratory_rate": 19.41,
+      "temperature": 36.4
+    },
+    {
+      "timestamp": "2025-01-08T20:30:00",
+      "heart_rate": 98.14,
+      "systolic_bp": 117.88,
+      "diastolic_bp": 74.43,
+      "mean_bp": 83.95,
+      "respiratory_rate": 18.41,
+      "temperature": 36.333333
+    },
+    {
+      "timestamp": "2025-01-08T22:30:00",
+      "heart_rate": 97.14,
+      "systolic_bp": 115.88,
+      "diastolic_bp": 72.43,
+      "mean_bp": 81.95,
+      "respiratory_rate": 17.41,
+      "temperature": 36.333333
+    },
+    {
+      "timestamp": "2025-01-09T00:30:00",
+      "heart_rate": 96.14,
+      "systolic_bp": 113.88,
+      "diastolic_bp": 70.43,
+      "mean_bp": 79.95,
+      "respiratory_rate": 16.91,
+      "temperature": 36.333333
+    },
+    {
+      "timestamp": "2025-01-09T02:30:00",
+      "heart_rate": 95.14,
+      "systolic_bp": 111.88,
+      "diastolic_bp": 68.43,
+      "mean_bp": 77.95,
+      "respiratory_rate": 16.41,
+      "temperature": 36.333333
+    },
+    {
+      "timestamp": "2025-01-09T04:30:00",
+      "heart_rate": 94.14,
+      "systolic_bp": 109.88,
+      "diastolic_bp": 66.43,
+      "mean_bp": 75.95,
+      "respiratory_rate": 15.91,
+      "temperature": 36.333333
+    },
+    {
+      "timestamp": "2025-01-09T06:30:00",
+      "heart_rate": 91.0,
+      "systolic_bp": 103.0,
+      "diastolic_bp": 63.0,
+      "mean_bp": 73.5,
+      "respiratory_rate": 14.0,
+      "temperature": 36.333333
+    },
+    {
+      "timestamp": "2025-01-09T08:30:00",
+      "heart_rate": 89.0,
+      "systolic_bp": 102.0,
+      "diastolic_bp": 62.0,
+      "mean_bp": 73.0,
+      "respiratory_rate": 14.0,
+      "temperature": 36.333333
+    },
+    {
+      "timestamp": "2025-01-07T13:30:00",
+      "gcs": 5.0,
+      "bun": 8.0,
+      "bilirubin": 0.4,
+      "albumin": 3.8,
+      "alk_phos": 48.0,
+      "pt": 13.6,
+      "inr": 1.2,
+      "phosphate": 2.7,
+      "aptt": 33.5,
+      "anion_gap": 14.0,
+      "rdw": 13.9
+    },
+    {
+      "timestamp": "2025-01-08T01:30:00",
+      "gcs": 5.0,
+      "bun": 7.0,
+      "bilirubin": 0.35,
+      "albumin": 3.8,
+      "alk_phos": 47.0,
+      "pt": 14.1,
+      "inr": 1.25,
+      "phosphate": 2.5,
+      "aptt": 33.6,
+      "anion_gap": 11.5,
+      "rdw": 13.8
+    },
+    {
+      "timestamp": "2025-01-08T14:30:00",
+      "gcs": 5.0,
+      "bun": 6.0,
+      "bilirubin": 0.35,
+      "albumin": 3.8,
+      "alk_phos": 47.0,
+      "pt": 14.3,
+      "inr": 1.25,
+      "phosphate": 2.4,
+      "aptt": 33.7,
+      "anion_gap": 11.5,
+      "rdw": 13.8
+    },
+    {
+      "timestamp": "2025-01-09T04:30:00",
+      "gcs": 5.0,
+      "bun": 5.0,
+      "bilirubin": 0.3,
+      "albumin": 3.8,
+      "alk_phos": 46.0,
+      "pt": 14.6,
+      "inr": 1.3,
+      "phosphate": 2.4,
+      "aptt": 33.8,
+      "anion_gap": 9.0,
+      "rdw": 13.7
+    }
+  ]
+}

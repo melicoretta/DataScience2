@@ -1,4 +1,3 @@
-from django.shortcuts import render
 import pandas as pd
 import re
 from django.contrib.staticfiles.storage import staticfiles_storage
@@ -10,6 +9,9 @@ import pickle
 import shap
 import joblib
 import json
+import os
+from django.shortcuts import render, redirect
+from django.views.generic.edit import FormView
 from sklearn.impute import SimpleImputer
 import matplotlib.pyplot as plt
 import matplotlib
@@ -18,9 +20,21 @@ from django.views.decorators.csrf import csrf_exempt
 import numpy as np
 import math
 import ast
-
+from django.urls import reverse
+from datamanagement.feature_extraction import engineer_features
 matplotlib.use("Agg")  # Use non-GUI backend
 import matplotlib.pyplot as plt
+from .forms import UploadFileForm
+
+model_paths = {
+    "XGBoost": staticfiles_storage.path('model/XGBoost.joblib'),
+    "XGBoost_90_days": staticfiles_storage.path('model/XGBoost_90days.joblib'),
+    "XGBoost_180_days": staticfiles_storage.path('model/XGBoost_180days.joblib')
+}
+
+feature_df_name = staticfiles_storage.path('files/fifth_feature_df_14_01_2026.csv')
+upload_path = staticfiles_storage.path('upload/')
+
 
 def read_new_patient(file):
     with open(file, "r") as f:
@@ -39,7 +53,7 @@ def read_feature(file):
     return data_feature
 
 
-model_feature = read_feature(staticfiles_storage.path('files/fourth_feature_df_31_12_2025.csv'))
+model_feature = read_feature(staticfiles_storage.path('files/fifth_feature_df_14_01_2026.csv'))
 
 
 def filter_hadm_id(hadm_id):
@@ -107,15 +121,8 @@ patient_data = read_patient_data()
 admission_data = read_admission()
 
 
-def index_patient_data(request):
+def index(request):
     return render(request, 'datamanagement/base.html')
-
-
-def hospital_adm_id(hadm_id):
-    filter = df[hadm_id]
-
-    filter[[]]
-    return filter
 
 
 
@@ -226,34 +233,52 @@ def model_shap(data):
                                    "Lactate_mean": data["filter_hadm_id"]["Lactate_mean"].iloc[0],
                                    "BUN_min": data["filter_hadm_id"]["BUN_min"].iloc[0],
                                    "BUN_mean": data["filter_hadm_id"]["BUN_mean"].iloc[0],
+                                   "BUN_max": data["filter_hadm_id"]["BUN_max"].iloc[0],
                                    "Bilirubin_max": data["filter_hadm_id"]["Bilirubin_max"].iloc[0],
                                    "Bilirubin_mean": data["filter_hadm_id"]["Bilirubin_mean"].iloc[0],
-                                   "AG_MEAN": data["filter_hadm_id"]["AG_MEAN"].iloc[0],
-                                   "AG_MAX": data["filter_hadm_id"]["AG_MAX"].iloc[0],
-                                   "AG_MIN": data["filter_hadm_id"]["AG_MIN"].iloc[0],
-                                   "AG_STD": data["filter_hadm_id"]["AG_STD"].iloc[0],
-                                   "SYSBP_MIN": data["filter_hadm_id"]["SYSBP_MIN"].iloc[0],
-                                   "SYSBP_MEAN": data["filter_hadm_id"]["SYSBP_MEAN"].iloc[0],
-                                   "SYSBP_STD": data["filter_hadm_id"]["SYSBP_STD"].iloc[0],
-                                   "DIASBP_MIN": data["filter_hadm_id"]["DIASBP_MIN"].iloc[0],
-                                   "DIASBP_MEAN": data["filter_hadm_id"]["DIASBP_MEAN"].iloc[0],
-                                   "AGE": data["filter_hadm_id"]["AGE"].iloc[0],
-                                   "RR_MEAN": data["filter_hadm_id"]["RR_MEAN"].iloc[0],
-                                   "RR_MAX": data["filter_hadm_id"]["RR_MAX"].iloc[0],
-                                   "RR_MIN": data["filter_hadm_id"]["RR_MIN"].iloc[0],
-                                   "TEMP_STD": data["filter_hadm_id"]["TEMP_STD"].iloc[0],
-                                   "TEMP_MIN": data["filter_hadm_id"]["TEMP_MIN"].iloc[0],
-                                   "HR_MEAN": data["filter_hadm_id"]["HR_MEAN"].iloc[0],
-                                   "HR_MAX": data["filter_hadm_id"]["HR_MAX"].iloc[0],
-                                   "HR_STD": data["filter_hadm_id"]["HR_STD"].iloc[0],
+                                   "Albumin_mean": data["filter_hadm_id"]["Albumin_mean"].iloc[0],
+                                   "Albumin_min": data["filter_hadm_id"]["Albumin_min"].iloc[0],
+                                   "Albumin_max": data["filter_hadm_id"]["Albumin_max"].iloc[0],
+                                   "AlkPhos_mean": data["filter_hadm_id"]["AlkPhos_mean"].iloc[0],
+                                   "AlkPhos_max": data["filter_hadm_id"]["AlkPhos_max"].iloc[0],
+                                   "AlkPhos_min": data["filter_hadm_id"]["AlkPhos_min"].iloc[0],
+                                   "PT_mean": data["filter_hadm_id"]["PT_mean"].iloc[0],
+                                   "PT_min": data["filter_hadm_id"]["PT_min"].iloc[0],
+                                   "INR_mean": data["filter_hadm_id"]["INR_mean"].iloc[0],
+                                   "INR_min": data["filter_hadm_id"]["INR_min"].iloc[0],
+                                   "Phosphate_mean": data["filter_hadm_id"]["Phosphate_mean"].iloc[0],
+                                   "Phosphate_max": data["filter_hadm_id"]["Phosphate_max"].iloc[0],
+                                   "PaO2_mean": data["filter_hadm_id"]["PaO2_mean"].iloc[0],
+                                   "PaO2_max": data["filter_hadm_id"]["PaO2_max"].iloc[0],
+                                   "aPTT_mean": data["filter_hadm_id"]["aPTT_mean"].iloc[0],
+                                   "aPTT_min": data["filter_hadm_id"]["aPTT_min"].iloc[0],
+
+                                   "AG_mean": data["filter_hadm_id"]["AG_mean"].iloc[0],
+                                   "AG_max": data["filter_hadm_id"]["AG_max"].iloc[0],
+                                   "AG_min": data["filter_hadm_id"]["AG_min"].iloc[0],
+                                   "AG_std": data["filter_hadm_id"]["AG_std"].iloc[0],
+                                   "SYSBP_min": data["filter_hadm_id"]["SYSBP_min"].iloc[0],
+                                   "SYSBP_mean": data["filter_hadm_id"]["SYSBP_mean"].iloc[0],
+                                   "SYSBP_std": data["filter_hadm_id"]["SYSBP_std"].iloc[0],
+                                   "DIASBP_min": data["filter_hadm_id"]["DIASBP_min"].iloc[0],
+                                   "DIASBP_mean": data["filter_hadm_id"]["DIASBP_mean"].iloc[0],
+                                   "age": data["filter_hadm_id"]["age"].iloc[0],
+                                   "RR_mean": data["filter_hadm_id"]["RR_mean"].iloc[0],
+                                   "RR_max": data["filter_hadm_id"]["RR_max"].iloc[0],
+                                   "RR_min": data["filter_hadm_id"]["RR_min"].iloc[0],
+                                   "TEMP_std": data["filter_hadm_id"]["TEMP_std"].iloc[0],
+                                   "TEMP_min": data["filter_hadm_id"]["TEMP_min"].iloc[0],
+                                   "HR_mean": data["filter_hadm_id"]["HR_mean"].iloc[0],
+                                   "HR_max": data["filter_hadm_id"]["HR_max"].iloc[0],
+                                   "HR_std": data["filter_hadm_id"]["HR_std"].iloc[0],
                                    "RDW_max": data["filter_hadm_id"]["RDW_max"].iloc[0],
                                    "RDW_mean": data["filter_hadm_id"]["RDW_mean"].iloc[0],
                                    "RDW_min": data["filter_hadm_id"]["RDW_min"].iloc[0],
                                    "RDW_std": data["filter_hadm_id"]["RDW_std"].iloc[0],
                                    "age_adj_comorbidity_score":
                                        data["filter_hadm_id"]["age_adj_comorbidity_score"].iloc[0],
-                                   "MEANBP_MIN": data["filter_hadm_id"]["MEANBP_MIN"].iloc[0],
-                                   "MEANBP_MEAN": data["filter_hadm_id"]["MEANBP_MEAN"].iloc[0]
+                                   "MEANBP_min": data["filter_hadm_id"]["MEANBP_min"].iloc[0],
+                                   "MEANBP_mean": data["filter_hadm_id"]["MEANBP_mean"].iloc[0]
                                    }])
     df = frontend_data.apply(pd.to_numeric, errors="coerce")
 
@@ -585,3 +610,283 @@ def load_hadm_data(request):
         return JsonResponse(context, safe=False)
 
     return render(request, 'datamanagement/base.html')
+
+
+def get_feature_result(feature):
+    frontend_data = pd.DataFrame([{"GCS_max": feature["GCS_max"],
+                                   "GCS_mean": feature["GCS_mean"],
+                                   "Lactate_min": feature["Lactate_min"],
+                                   "Lactate_max": feature["Lactate_max"],
+                                   "Lactate_mean": feature["Lactate_mean"],
+                                   "BUN_min": feature["BUN_min"],
+                                   "BUN_mean": feature["BUN_mean"],
+                                   "BUN_max": feature["BUN_max"],
+                                   "Bilirubin_max": feature["Bilirubin_max"],
+                                   "Bilirubin_mean": feature["Bilirubin_mean"],
+                                   "Albumin_mean": feature["Albumin_mean"],
+                                   "Albumin_min": feature["Albumin_min"],
+                                   "Albumin_max": feature["Albumin_max"],
+                                   "AlkPhos_mean": feature["AlkPhos_mean"],
+                                   "AlkPhos_max": feature["AlkPhos_max"],
+                                   "AlkPhos_min": feature["AlkPhos_min"],
+                                   "PT_mean": feature["PT_mean"],
+                                   "PT_min": feature["PT_min"],
+                                   "INR_mean": feature["INR_mean"],
+                                   "INR_min": feature["INR_min"],
+                                   "Phosphate_mean": feature["Phosphate_mean"],
+                                   "Phosphate_max": feature["Phosphate_max"],
+                                   "PaO2_mean": feature["PaO2_mean"],
+                                   "PaO2_max": feature["PaO2_max"],
+                                   "aPTT_mean": feature["aPTT_mean"],
+                                   "aPTT_min": feature["aPTT_min"],
+                                   "AG_mean": feature["AG_mean"],
+                                   "AG_max": feature["AG_max"],
+                                   "AG_min": feature["AG_min"],
+                                   "AG_std": feature["AG_std"],
+                                   "SYSBP_min": feature["SYSBP_min"],
+                                   "SYSBP_mean": feature["SYSBP_mean"],
+                                   "SYSBP_std": feature["SYSBP_std"],
+                                   "DIASBP_min": feature["DIASBP_min"],
+                                   "DIASBP_mean": feature["DIASBP_mean"],
+                                   "age": feature["age"],
+                                   "RR_mean": feature["RR_mean"],
+                                   "RR_max": feature["RR_max"],
+                                   "RR_min": feature["RR_min"],
+                                   "TEMP_std": feature["TEMP_std"],
+                                   "TEMP_min": feature["TEMP_min"],
+                                   "HR_mean": feature["HR_mean"],
+                                   "HR_max": feature["HR_max"],
+                                   "HR_std": feature["HR_std"],
+                                   "RDW_max": feature["RDW_max"],
+                                   "RDW_mean": feature["RDW_mean"],
+                                   "RDW_min": feature["RDW_min"],
+                                   "RDW_std": feature["RDW_std"],
+                                   "age_adj_comorbidity_score": feature["age_adj_comorbidity_score"],
+                                   "MEANBP_min": feature["MEANBP_min"],
+                                   "MEANBP_mean": feature["MEANBP_mean"]
+                                   }])
+    feature_df = frontend_data.apply(pd.to_numeric, errors="coerce")
+    return feature_df, frontend_data
+
+def compute_shapvalue(df, frontend_data):
+    predictions = {}
+    shap_results = {}
+    frontend_dict = {}
+
+    # ---------------------------------------
+    # 2. Load all models
+    # ---------------------------------------
+
+    models = {name: joblib.load(path) for name, path in model_paths.items()}
+    print("gel: ", models)
+
+    for model_name, pipeline in models.items():
+        print(f"Papal: {model_name}, {pipeline}")
+        # Predict probability
+        pred = pipeline.predict_proba(df)[0][1]
+        predictions[model_name] = float(pred) * 100
+
+        # ---------------------------------------
+        # SHAP Explainability
+        # ---------------------------------------
+
+        tree_model = pipeline.named_steps["model"]
+        X_transformed = pipeline[:-1].transform(df)
+        explainer = shap.TreeExplainer(tree_model)
+        shap_values = explainer.shap_values(X_transformed)
+
+        # For classifiers, shap_values is a list → take class 1
+        if isinstance(shap_values, list):
+            shap_values = shap_values[1]
+
+        # Save SHAP summary plot
+        shap.summary_plot(
+            shap_values,
+            df,
+            feature_names=df.columns,
+            show=False)
+        plt.tight_layout()
+        plt.savefig(staticfiles_storage.path(f'imgs/shap_summary_{model_name}.png'),
+                    dpi=300)
+        plt.close()
+
+        # Pair features with SHAP values
+        sorted_features = sorted(
+            zip(df.columns.tolist(),
+                shap_values[0].tolist()),
+            key=lambda x: x[1],
+            reverse=True
+        )
+
+        # Build frontend feature list for this model
+        name_feature = [f for f, _ in sorted_features]
+        value_feature = [frontend_data[f].iloc[0] for f, _ in sorted_features]
+        frontend_dict[model_name] = {
+            "feature_name": [str(v) for v in name_feature],
+            "feature_value": [to_json_safe(v) for v in value_feature]
+        }
+
+        shap_results[model_name] = {
+            "feature_names": df.columns.tolist(),
+            "shap_values": shap_values[0].tolist()
+        }
+
+        # ---------------------------------------
+        # 4. Final JSON response
+        # ---------------------------------------
+    json_response = {
+        "prediction": predictions,
+        "explainability": shap_results,
+        "contributor_data": frontend_dict
+    }
+
+    return JsonResponse(json_response, safe=False)
+
+def prediction_new_patient(higher_measurement, lower_measurement):
+    # ---------------------------------------
+    # 1. Build frontend dataframe
+    # ---------------------------------------
+    print(higher_measurement)
+    feature_higher = higher_measurement['higher_measurement']['feature']
+    feature_lower = lower_measurement['lower_measurement']['feature']
+
+    # get frontend data
+    higher_df, frontend_higher = get_feature_result(feature_higher)
+    lower_df, frontend_lower = get_feature_result(feature_lower)
+
+    # ---------------------------------------
+    # 2. Load all models
+    # ---------------------------------------
+
+    models = {name: joblib.load(path) for name, path in model_paths.items()}
+    print("gel: ", models)
+    # ---------------------------------------
+    # 3. Loop through each model
+    # ---------------------------------------
+
+    json_response_higher = compute_shapvalue(higher_df, frontend_higher)
+    json_response_lower = compute_shapvalue(lower_df, frontend_lower)
+
+    context = {
+        "higher": json_response_higher,
+        "lower": json_response_lower
+    }
+    JsonResponse(context, safe=False)
+
+
+def read_measurement(folder, filename):
+    file_path = upload_path + "/" + folder + "/" + filename
+    with open(file_path, "r") as f:
+        measurement = json.load(f)
+    return measurement
+
+def feature_extraction(request):
+    training_df = pd.read_csv(feature_df_name)
+    file_path1 = staticfiles_storage.path('files/high_risk_patient_data.json')
+    file_path2 = staticfiles_storage.path('files/low_risk_patient_data.json')
+
+    # load measurement as json higher and lower
+    with open(file_path1, "r") as f:
+        higher_measurement = json.load(f)
+    with open(file_path2, "r") as f:
+        lower_measurement = json.load(f)
+
+
+    if request.method == "GET":
+        return JsonResponse(
+            {"higher_measurement": higher_measurement,
+             "lower_measurement": lower_measurement},
+            safe=False
+        )
+
+    if request.method == "POST":
+
+        higher_result = engineer_features(higher_measurement, training_df=training_df)
+
+        #model_result1, model_result2 = prediction_new_patient(higher_result, lower_result)
+        print("result", higher_result)
+        return JsonResponse(
+            {"measurement": higher_result,
+             }, safe=False
+        )
+
+def get_feature_view(measurement):
+    return JsonResponse({"measurement": measurement}, safe=False)
+
+def error_upload(request):
+    """
+
+    :param request: request for file without json or csv Format
+    :return: error template
+    """
+    # für Datei, die keine .zip, .csv, .json Formatierung haben
+    msg = "Only .json .csv and .zip format are allow to upload the file"
+    context = {
+        "error_upload_msg": msg
+    }
+    return render(request, "datamanagement/error_upload.html", context)
+def handle_uploaded_file(file, filename, folder_name):
+    """
+    :param file: file object, binary file
+    :param filename: name der file = file.name
+    :param folder_name: Name of Folder, which is entered by user
+    :return:
+
+    This function saves the uploaded file to the hard drive.
+    'wb+': this mode overwrites the file on the hard drive if the file already exists.
+    """
+    split_tup = os.path.splitext(file.name)
+    if not os.path.exists(upload_path):
+        os.makedirs(staticfiles_storage.path() + 'upload/')
+
+    if not os.path.exists(upload_path + "/" + folder_name):
+        os.makedirs(upload_path + "/" + folder_name + "/")
+
+    # schreibt die Datei auf der Festplatte
+    with open(upload_path + "/" + folder_name + "/" + str(filename), "wb+") as destination:
+        for chunk in file.chunks():
+            destination.write(chunk)
+
+
+class label_dataView(FormView):
+    """
+    This method allows the user to upload files.
+    After the template is displayed, the selected file will be sent by post.
+
+    """
+    form_class = UploadFileForm
+    template_name = "datamanagement/uploadfile_labeldata.html"
+    success_url = "..."
+
+    def post(self, request, *args, **kwargs):
+
+        # Daten, die per Post gesendet werden.
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        files = form.cleaned_data["file"]
+        folder_title = form.cleaned_data["file_title"]
+
+        for file in files:
+            split_tup = os.path.splitext(file.name)
+            filename = file.name
+            if (str(filename).endswith(".json")):
+
+                if folder_title == "":
+                    folder_title = split_tup[0]
+
+                handle_uploaded_file(file, filename, folder_title)
+
+                # read the content of file
+                measurement = read_measurement(folder=folder_title, filename=filename)
+                context = {"measurement": measurement}
+                
+                return redirect(reverse('datamanagement:get_feature_view') + f'?measurement={measurement}')
+            else:
+                return redirect(reverse("datamanagement:error_upload"))  # Replace with your template.
+        return redirect(reverse('datamanagement:index'))

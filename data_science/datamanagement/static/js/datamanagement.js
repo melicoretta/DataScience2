@@ -17,12 +17,11 @@ if (dropdown) {
     // Add event listener for value changes
     dropdown.addEventListener('change', function () {
         console.log("Dropdown value changed to:", this.value);
-     // Add your logic here
+        // Add your logic here
     });
 } else {
     console.log("Dropdown element with id 'myDropdown' does not exist.");
 }
-
 
 
 document.querySelectorAll(".patient-table td.value").forEach(td => {
@@ -118,12 +117,10 @@ $("#input_diagnosis_id").autocomplete({
 $("#input_new_patient_id").autocomplete({
     source: function (request, response) {
         $.ajax({
-            url: window.location.href + "datamanagement/search_new_patient/", dataType: "json",
-            data: {
+            url: window.location.href + "datamanagement/search_new_patient/", dataType: "json", data: {
                 term: request.term,
 
             }, success: function (response_new_patient) {
-
 
 
                 // map only the value on array
@@ -283,6 +280,7 @@ function addRow_feature(feature_name, feature_value, table_contributor) {
     tr.appendChild(td2);
     table_contributor.appendChild(tr);
 }
+
 function addRow(label, value, table_element) {
     const tr = document.createElement("tr");
     const td1 = document.createElement("td");
@@ -338,8 +336,6 @@ function top_contributor_title(title, div_element) {
     top_contributor_h7.textContent = `Top 10 Clinical Variables With the Highest Impact on the ${title} Prediction`;
     div_element.appendChild(top_contributor_h7);
 }
-
-
 
 
 $("#submit_subject_id").on("click", function () {
@@ -448,9 +444,10 @@ $("#submit_subject_id").on("click", function () {
             // this element is the container of all the 2 table
             const tab_personal_info = document.getElementById('personal_info');
 
-            if (tab_personal_info){
+            if (tab_personal_info) {
                 while (tab_personal_info.firstChild) {
-                    tab_personal_info.removeChild(tab_personal_info.firstChild); }
+                    tab_personal_info.removeChild(tab_personal_info.firstChild);
+                }
             }
 
             addRow("Subject_id", subject, table_patient_info);
@@ -481,8 +478,8 @@ $("#submit_subject_id").on("click", function () {
             addRow("Died", died, table_patient_diagnosis);
 
             // content about model for the prediction
-            if(document.getElementById('p_error_available')) {
-                    document.getElementById('p_error_available').remove();
+            if (document.getElementById('p_error_available')) {
+                document.getElementById('p_error_available').remove();
             }
             if (json_data.model_detail[hadm_id][0].len_hadm_id_result === 0) {
 
@@ -532,7 +529,6 @@ $("#submit_subject_id").on("click", function () {
                 // create element table for contributor
 
 
-
                 function table_contributor(title, hadm_id, model_name) {
                     const div_table_contributor = document.createElement('div');
                     div_table_contributor.style.display = "flex";
@@ -541,7 +537,6 @@ $("#submit_subject_id").on("click", function () {
                     const table_XGBoost = document.createElement('table');
                     table_XGBoost.style.border = "none";
                     table_XGBoost.style.marginTop = "8px";
-
 
                     const div_plot_model = document.createElement('div');
                     div_plot_model.setAttribute('id', `shapPlot_${hadm_id}_${model_name}`);
@@ -674,303 +669,7 @@ function displayMessage(type, message) {
     }, 1500);
 }
 
-const slider = document.querySelector("input[type='range']");
-slider.addEventListener("input", () => {
-    slider.style.setProperty("--value", slider.value);
-});
 
-
-// slider input for age
-const slider_Age = document.getElementById("slider_Age");
-const tooltip_Age = document.getElementById("tooltip_Age");
-
-slider_Age.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_Age, tooltip_Age);
-});
-
-// slider input for age
-const slider_GCS_max = document.getElementById("slider_GCS_max");
-const tooltip_GCS_max = document.getElementById("tooltip_GCS_max");
-slider_GCS_max.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_GCS_max, tooltip_GCS_max);
-});
-
-// slider input for age
-const slider_GCS_mean = document.getElementById("slider_GCS_mean");
-const tooltip_GCS_mean = document.getElementById("tooltip_GCS_mean");
-slider_GCS_mean.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_GCS_mean, tooltip_GCS_mean);
-});
-
-// slider input for slider_Lactate_min
-const slider_Lactate_min = document.getElementById("slider_Lactate_min");
-const tooltip_Lactate_min = document.getElementById("tooltip_Lactate_min");
-slider_Lactate_min.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_Lactate_min, tooltip_Lactate_min);
-});
-
-// slider input for slider_Lactate_min
-const slider_Lactate_max = document.getElementById("slider_Lactate_max");
-const tooltip_Lactate_max = document.getElementById("tooltip_Lactate_max");
-slider_Lactate_max.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_Lactate_max, tooltip_Lactate_max);
-});
-
-// slider input for slider_Lactate_min
-const slider_Lactate_mean = document.getElementById("slider_Lactate_mean");
-const tooltip_Lactate_mean = document.getElementById("tooltip_Lactate_mean");
-slider_Lactate_mean.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_Lactate_mean, tooltip_Lactate_mean);
-});
-
-const slider_BUN_min = document.getElementById("slider_BUN_min");
-const tooltip_BUN_min = document.getElementById("tooltip_BUN_min");
-slider_BUN_min.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_BUN_min, tooltip_BUN_min);
-});
-
-const slider_BUN_mean = document.getElementById("slider_BUN_mean");
-const tooltip_BUN_mean = document.getElementById("tooltip_BUN_mean");
-slider_BUN_mean.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_BUN_mean, tooltip_BUN_mean);
-});
-
-const slider_Bilirubin_max = document.getElementById("slider_Bilirubin_max");
-const tooltip_Bilirubin_max = document.getElementById("tooltip_Bilirubin_max");
-slider_Bilirubin_max.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_Bilirubin_max, tooltip_Bilirubin_max);
-});
-
-const slider_Bilirubin_mean = document.getElementById("slider_Bilirubin_mean");
-const tooltip_Bilirubin_mean = document.getElementById("tooltip_Bilirubin_mean");
-slider_Bilirubin_mean.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_Bilirubin_mean, tooltip_Bilirubin_mean);
-});
-
-const slider_AG_MEAN = document.getElementById("slider_AG_MEAN");
-const tooltip_AG_MEAN = document.getElementById("tooltip_AG_MEAN");
-slider_AG_MEAN.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_AG_MEAN, tooltip_AG_MEAN);
-});
-
-const slider_AG_MAX = document.getElementById("slider_AG_MAX");
-const tooltip_AG_MAX = document.getElementById("tooltip_AG_MAX");
-slider_AG_MAX.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_AG_MAX, tooltip_AG_MAX);
-});
-
-
-const slider_AG_MIN = document.getElementById("slider_AG_MIN");
-const tooltip_AG_MIN = document.getElementById("tooltip_AG_MIN");
-slider_AG_MIN.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_AG_MIN, tooltip_AG_MIN);
-});
-
-const slider_AG_STD = document.getElementById("slider_AG_STD");
-const tooltip_AG_STD = document.getElementById("tooltip_AG_STD");
-slider_AG_STD.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_AG_STD, tooltip_AG_STD);
-});
-
-const slider_SYSBP_MIN = document.getElementById("slider_SYSBP_MIN");
-const tooltip_SYSBP_MIN = document.getElementById("tooltip_SYSBP_MIN");
-slider_SYSBP_MIN.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_SYSBP_MIN, tooltip_SYSBP_MIN);
-});
-
-const slider_SYSBP_MEAN = document.getElementById("slider_SYSBP_MEAN");
-const tooltip_SYSBP_MEAN = document.getElementById("tooltip_SYSBP_MEAN");
-slider_SYSBP_MEAN.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_SYSBP_MEAN, tooltip_SYSBP_MEAN);
-});
-
-const slider_SYSBP_STD = document.getElementById("slider_SYSBP_STD");
-const tooltip_SYSBP_STD = document.getElementById("tooltip_SYSBP_STD");
-slider_SYSBP_STD.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_SYSBP_STD, tooltip_SYSBP_STD);
-});
-
-
-const slider_DIASBP_MIN = document.getElementById("slider_DIASBP_MIN");
-const tooltip_DIASBP_MIN = document.getElementById("tooltip_DIASBP_MIN");
-slider_DIASBP_MIN.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_DIASBP_MIN, tooltip_DIASBP_MIN);
-});
-
-const slider_DIASBP_MEAN = document.getElementById("slider_DIASBP_MEAN");
-const tooltip_DIASBP_MEAN = document.getElementById("tooltip_DIASBP_MEAN");
-slider_DIASBP_MEAN.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_DIASBP_MEAN, tooltip_DIASBP_MEAN);
-});
-
-const slider_RR_MEAN = document.getElementById("slider_RR_MEAN");
-const tooltip_RR_MEAN = document.getElementById("tooltip_RR_MEAN");
-slider_RR_MEAN.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_RR_MEAN, tooltip_RR_MEAN);
-});
-
-
-const slider_RR_MAX = document.getElementById("slider_RR_MAX");
-const tooltip_RR_MAX = document.getElementById("tooltip_RR_MAX");
-slider_RR_MAX.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_RR_MAX, tooltip_RR_MAX);
-});
-
-const slider_RR_MIN = document.getElementById("slider_RR_MIN");
-const tooltip_RR_MIN = document.getElementById("tooltip_RR_MIN");
-slider_RR_MIN.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_RR_MIN, tooltip_RR_MIN);
-});
-
-const slider_TEMP_STD = document.getElementById("slider_TEMP_STD");
-const tooltip_TEMP_STD = document.getElementById("tooltip_TEMP_STD");
-slider_TEMP_STD.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_TEMP_STD, tooltip_TEMP_STD);
-});
-
-const slider_TEMP_MIN = document.getElementById("slider_TEMP_MIN");
-const tooltip_TEMP_MIN = document.getElementById("tooltip_TEMP_MIN");
-slider_TEMP_MIN.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_TEMP_MIN, tooltip_TEMP_MIN);
-});
-
-const slider_HR_MEAN = document.getElementById("slider_HR_MEAN");
-const tooltip_HR_MEAN = document.getElementById("tooltip_HR_MEAN");
-slider_HR_MEAN.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_HR_MEAN, tooltip_HR_MEAN);
-});
-
-const slider_HR_MAX = document.getElementById("slider_HR_MAX");
-const tooltip_HR_MAX = document.getElementById("tooltip_HR_MAX");
-slider_HR_MAX.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_HR_MAX, tooltip_HR_MAX);
-});
-
-const slider_HR_STD = document.getElementById("slider_HR_STD");
-const tooltip_HR_STD = document.getElementById("tooltip_HR_STD");
-slider_HR_STD.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_HR_STD, tooltip_HR_STD);
-});
-
-const slider_RDW_max = document.getElementById("slider_RDW_max");
-const tooltip_RDW_max = document.getElementById("tooltip_RDW_max");
-slider_RDW_max.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_RDW_max, tooltip_RDW_max);
-});
-
-const slider_RDW_mean = document.getElementById("slider_RDW_mean");
-const tooltip_RDW_mean = document.getElementById("tooltip_RDW_mean");
-slider_RDW_mean.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_RDW_mean, tooltip_RDW_mean);
-});
-
-const slider_RDW_min = document.getElementById("slider_RDW_min");
-const tooltip_RDW_min = document.getElementById("tooltip_RDW_min");
-slider_RDW_min.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_RDW_min, tooltip_RDW_min);
-});
-
-const slider_RDW_std = document.getElementById("slider_RDW_std");
-const tooltip_RDW_std = document.getElementById("tooltip_RDW_std");
-slider_RDW_std.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_RDW_std, tooltip_RDW_std);
-});
-
-const slider_age_adj_comorbidity_score = document.getElementById("slider_age_adj_comorbidity_score");
-const tooltip_age_adj_comorbidity_score = document.getElementById("tooltip_age_adj_comorbidity_score");
-slider_age_adj_comorbidity_score.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_age_adj_comorbidity_score, tooltip_age_adj_comorbidity_score);
-    //slider_age_adj_comorbidity_score.style.background = `linear-gradient( to right, #22c55e 0%, #22c55e ${percent * 100}%, #1f2937 ${percent * 100}%, #1f2937 100% )`;
-
-});
-
-const slider_MEANBP_MEAN = document.getElementById("slider_MEANBP_MEAN");
-const tooltip_MEANBP_MEAN = document.getElementById("tooltip_MEANBP_MEAN");
-slider_MEANBP_MEAN.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_MEANBP_MEAN, tooltip_MEANBP_MEAN);
-});
-
-const slider_MEANBP_MIN = document.getElementById("slider_MEANBP_MIN");
-const tooltip_MEANBP_MIN = document.getElementById("tooltip_MEANBP_MIN");
-slider_MEANBP_MIN.addEventListener("input", e => {
-    const percent = (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100;
-    e.target.style.setProperty("--value", percent + "%");
-    move_input_range(slider_MEANBP_MIN, tooltip_MEANBP_MIN);
-});
-
-function move_input_range(slider, tooltip) {
-    "use strict";
-    tooltip.textContent = slider.value;
-    const percent = (slider.value - slider.min) / (slider.max - slider.min);
-    tooltip.style.left = `${percent * 100}%`;
-
-}
 
 $("#feature_list").on("click", function () {
 
@@ -980,8 +679,7 @@ $("#feature_list").on("click", function () {
         }
     });
     $.ajax({
-        type: "POST", url: window.location.href + "datamangement/feature_list/",
-        data: {
+        type: "POST", url: window.location.href + "datamangement/feature_list/", data: {
 
             subject_id: $("input[name=new_patient_id]").val(),
             AGE: $("input[name=Age]").val(),
@@ -1276,7 +974,7 @@ function renderShapSummaryPlot(title, model_name, featureNames, shapValues, subj
     Plotly.newPlot(`shapPlot_${hadm_id}_${model_name}`, [trace], layout, {responsive: true});
 }
 
-document.getElementById("tab-3").addEventListener("click", () => {
+document.getElementById("tab-4").addEventListener("click", () => {
     //loadPatients();
 });
 document.addEventListener("DOMContentLoaded", function () {
@@ -1298,7 +996,7 @@ async function loadPatients() {
     }
 }
 
-function add_detail_summary(data){
+function add_detail_summary(data) {
     const details = document.createElement("details");
     details.style.marginBottom = "10px";
     // <summary>
@@ -1336,23 +1034,25 @@ function add_detail_summary(data){
         table.appendChild(tr);
     }
 }
+
 function parsePythonDict(str) {
     if (!str) return null;
     return JSON.parse(str.replace(/'/g, '"'));
 }
 
-function prediction_class(prediction){
+function prediction_class(prediction) {
     const tdPred = document.createElement("td");
     if (prediction >= 75) {
-           tdPred.classList.add("high-risk");
-        } else if (prediction >= 55) {
-            tdPred.classList.add("medium-risk");
-        } else {
-            tdPred.classList.add("low-risk");
-        }
+        tdPred.classList.add("high-risk");
+    } else if (prediction >= 55) {
+        tdPred.classList.add("medium-risk");
+    } else {
+        tdPred.classList.add("low-risk");
+    }
     tdPred.textContent = `${prediction}%`;
     return tdPred;
 }
+
 function render_patient(data) {
     const patient_data = JSON.parse(data['patient_data']);
     patients = patient_data;
@@ -1375,7 +1075,8 @@ function render_patient(data) {
 
         // Subject_id
         const tdSubject = document.createElement("td");
-        tdSubject.textContent = p.Subject_id; row.appendChild(tdSubject);
+        tdSubject.textContent = p.Subject_id;
+        row.appendChild(tdSubject);
 
         // Hadm_id
         const tdHadm = document.createElement("td");
@@ -1393,7 +1094,6 @@ function render_patient(data) {
         const xgboost_180 = pred?.XGBoost_180_days?.toFixed(2) ?? "N/A"
 
 
-
         row.appendChild(prediction_class(xgboost));
         row.appendChild(prediction_class(xgboost_90));
         row.appendChild(prediction_class(xgboost_180));
@@ -1402,13 +1102,14 @@ function render_patient(data) {
         table.appendChild(row);
     });
 }
+
 function parsePythonDict(str) {
-     if (!str) return null;
-     return JSON.parse( str
-         .replace(/'/g, '"') // single → double quotes
-         .replace(/\bNone\b/g, 'null') // Python None → JS null
-         .replace(/\bTrue\b/g, 'true') // Python True → JS true
-         .replace(/\bFalse\b/g, 'false') // Python False → JS false
+    if (!str) return null;
+    return JSON.parse(str
+        .replace(/'/g, '"') // single → double quotes
+        .replace(/\bNone\b/g, 'null') // Python None → JS null
+        .replace(/\bTrue\b/g, 'true') // Python True → JS true
+        .replace(/\bFalse\b/g, 'false') // Python False → JS false
     );
 
 }
@@ -1429,16 +1130,16 @@ function buildFeatureTable(contributor, modelName, display_name) {
             row.innerHTML = ` <td>${name}</td> <td>${cutTo2(values[index]) ?? "—"}</td> `;
             table.appendChild(row);
         }
-        });
+    });
     document.getElementById('div_contributor').appendChild(table)
 
 }
 
 
-function create_dropdown(model_data, subject_id){
+function create_dropdown(model_data, subject_id) {
     const dropdown = document.getElementById('myDropdown');
 
-    if (dropdown.hidden === true){
+    if (dropdown.hidden === true) {
         dropdown.hidden = false;
     }
     dropdown.options.length = 0
@@ -1452,24 +1153,24 @@ function create_dropdown(model_data, subject_id){
     });
 
     options.forEach(opt => {
-         const option = document.createElement("option");
-         option.value = subject_id;
-         option.textContent = `Hadm_id: ${opt}`;
-         dropdown.appendChild(option);
-     });
-     return dropdown;
+        const option = document.createElement("option");
+        option.value = subject_id;
+        option.textContent = `Hadm_id: ${opt}`;
+        dropdown.appendChild(option);
+    });
+    return dropdown;
 }
 
-function no_data(){
+function no_data() {
 
     const div_contributor = document.getElementById('div_contributor');
-    if (!document.getElementById('p_available')){
+    if (!document.getElementById('p_available')) {
 
-    const p_available = document.createElement('p');
-    p_available.setAttribute('id', 'p_available');
-    p_available.style.marginLeft = "20px";
-    p_available.textContent = 'There are no features associated with this subject_id ';
-    div_contributor.appendChild(p_available);
+        const p_available = document.createElement('p');
+        p_available.setAttribute('id', 'p_available');
+        p_available.style.marginLeft = "20px";
+        p_available.textContent = 'There are no features associated with this subject_id ';
+        div_contributor.appendChild(p_available);
     }
 }
 
@@ -1502,7 +1203,7 @@ document.getElementById("table_patient").addEventListener("click", (event) => {
         p_message.textContent = "Top 5 Clinical Features with the Highest Impact on the Prediction";
         p_message.style.marginLeft = "20px";
         div_contributor.appendChild(p_message);
-        if (document.getElementById('p_available')){
+        if (document.getElementById('p_available')) {
             document.getElementById('p_available').remove();
         }
         contributor = parsePythonDict(patient.contributor_data);
@@ -1519,10 +1220,11 @@ document.getElementById("table_patient").addEventListener("click", (event) => {
         no_data();
     }
 });
-function remove_element(){
-        document.getElementById('contributor_XGBoost')?.remove();
-        document.getElementById('contributor_XGBoost_90_days')?.remove();
-        document.getElementById('contributor_XGBoost_180_days')?.remove();
+
+function remove_element() {
+    document.getElementById('contributor_XGBoost')?.remove();
+    document.getElementById('contributor_XGBoost_90_days')?.remove();
+    document.getElementById('contributor_XGBoost_180_days')?.remove();
 }
 
 
@@ -1536,13 +1238,20 @@ function load_hadm_data(json_data) {
 
     // Extract the inner key (e.g., "129")
     const tableContainer = document.getElementById('tableContainer');
-    const patient_container = document.getElementById('patient_container');
+    //const patient_container = document.getElementById('patient_container');
+
+    const patient_container = document.createElement('div');
+    patient_container.style.display = "flex";
+    patient_container.style.flexDirection = "column";
+    tableContainer.appendChild(patient_container);
+
 
     const patient_info = document.createElement('div');
-    patient_info.setAttribute('id', 'patient_info_old');
+    patient_info.setAttribute('id', 'patient_info_');
     patient_info.classList.add('patient_info');
     patient_info.style.display = "flex";
     patient_info.style.flexDirection = "row";
+    patient_container.appendChild(patient_info);
 
 
     const section_details = document.createElement('div');
@@ -1554,11 +1263,13 @@ function load_hadm_data(json_data) {
     section_details.style.borderRadius = "5px";
     section_details.style.paddingLeft = "5px";
     section_details.style.paddingRight = "5px";
-    section_details.style.boxShadow = "(0, 0, 0, 0.15) 0px 0px 40px 0px";
+    section_details.style.boxShadow = "rgba(0, 0, 0, 0.15) 0px 0px 40px 0px";
+    patient_info.appendChild(section_details);
 
     const header_patient = document.createElement('div');
-    header_patient.setAttribute('id', 'header_patient');
+    header_patient.setAttribute('id', 'header_patient_');
     header_patient.style.backgroundColor = "white";
+    section_details.appendChild(header_patient);
 
     const header_patient_data_h3 = document.createElement('h3');
     header_patient_data_h3.style.marginRight = "2%";
@@ -1568,23 +1279,25 @@ function load_hadm_data(json_data) {
     const h7 = document.createElement('h7');
     h7.style.marginRight = "2%";
     h7.textContent = "Personal Information";
+    h7.style.color = "grey";
     header_patient.appendChild(h7);
 
     const separator = document.createElement('div');
     separator.classList.add('seperator');
     header_patient.appendChild(separator);
 
-    const tab_personal_info = document.createElement('table');
-    tab_personal_info.setAttribute('id', 'personal_info');
-    tab_personal_info.style.display = "flex";
-    section_details.appendChild(tab_personal_info);
+    const personal_info = document.createElement('div');
+    personal_info.style.display = "flex";
+    personal_info.setAttribute('id', 'personal_info_');
+    section_details.appendChild(personal_info);
+
 
     const table_patient_info = document.createElement("table");
     table_patient_info.style.border = "none";
     table_patient_info.style.marginTop = "8px";
     table_patient_info.style.marginRight = "10px";
     table_patient_info.classList.add("table_inline");
-
+    personal_info.appendChild(table_patient_info);
     // Helper to add rows
 
     // this element is the container of all the 2 table
@@ -1593,25 +1306,14 @@ function load_hadm_data(json_data) {
     addRow("Age", patient_data[0].Age, table_patient_info);
     addRow("Birthday", split_date(patient_data[0].Birthday), table_patient_info);
     addRow("Gender", patient_data[0].Gender, table_patient_info);
-    addRow("Marital_status", patient_data[0].Marital, table_patient_info);
+    addRow("Marital_status", patient_data[0].Marital_status, table_patient_info);
     addRow("Language", patient_data[0].Language, table_patient_info);
     addRow("Religion", patient_data[0].Religion, table_patient_info);
 
 
-    tab_personal_info.appendChild(table_patient_info);
-    section_details.appendChild(tab_personal_info);
-    patient_info.appendChild(section_details);
-    tableContainer.appendChild(patient_info);
     // section_diagnosis
-
-    const table_patient_diagnosis = document.createElement('table');
-    table_patient_diagnosis.classList.add('medical_info');
-    table_patient_diagnosis.style.border = "none";
-    table_patient_diagnosis.style.marginTop = "8px";
-    table_patient_diagnosis.style.marginRight = "10px";
-
     const section_diagnosis = document.createElement('div');
-    section_diagnosis.setAttribute('id', 'section_diagnosis');
+    section_diagnosis.setAttribute('id', 'section_diagnosis_');
     section_diagnosis.classList.add('section_patient', 'row');
     section_diagnosis.style.backgroundColor = "white";
     section_diagnosis.style.marginBottom = "10px";
@@ -1623,22 +1325,162 @@ function load_hadm_data(json_data) {
     section_diagnosis.style.marginLeft = "10px";
     section_diagnosis.style.marginRight = "5px";
     section_diagnosis.style.boxShadow = "rgba(0, 0, 0, 0.15) 0px 0px 40px 0px";
+    patient_info.appendChild(section_diagnosis);
 
+
+    // diagnosis header
     const diagnosis_header = document.createElement('div');
     diagnosis_header.style.backgroundColor = "white";
-    diagnosis_header.appendChild(header_patient_data_h3);
-    diagnosis_header.appendChild(h7);
-    diagnosis_header.appendChild(separator);
     section_diagnosis.appendChild(diagnosis_header);
 
+    const header_diagnosis_h3 = document.createElement('h3');
+    header_diagnosis_h3.style.marginRight = "2%";
+    header_diagnosis_h3.textContent = "Medical Data";
+    diagnosis_header.appendChild(header_diagnosis_h3);
+
+    const header_diagnosis_h7 = document.createElement('h7');
+    header_diagnosis_h7.textContent = "Patient Diagnosis";
+    header_diagnosis_h7.style.marginRight = "2%";
+    header_diagnosis_h7.style.color = "grey";
+    diagnosis_header.appendChild(header_diagnosis_h7);
+
+    const separator_medical = document.createElement('div');
+    separator_medical.classList.add('seperator');
+    diagnosis_header.appendChild(separator_medical);
+
+    const diagnosis_data = document.createElement('div');
+    diagnosis_data.style.display = "flex";
+    section_diagnosis.appendChild(diagnosis_data);
+
+
+    const table_patient_diagnosis = document.createElement('table');
+    table_patient_diagnosis.classList.add('medical_info');
+    table_patient_diagnosis.style.border = "none";
+    table_patient_diagnosis.style.marginTop = "8px";
+    table_patient_diagnosis.style.marginRight = "10px";
+    diagnosis_data.appendChild(table_patient_diagnosis);
 
     // insert element to table
+    let died;
+    if (patient_data[0].Died === 1){
+        died = "Yes";
+    } else {
+        died = "No";
+    }
     addRow("Hospital admission_id", patient_data[0].Hadm_id, table_patient_diagnosis);
-    addRow("Admission_time", split_date(patient_data[0].Admission), table_patient_diagnosis);
+    addRow("Admission_time", split_date(patient_data[0].Admission_time), table_patient_diagnosis);
     addRow("Insurance", patient_data[0].Insurance, table_patient_diagnosis);
     addRow("Diagnosis", (patient_data[0].Diagnosis || "").toLowerCase(), table_patient_diagnosis);
-    addRow("Died", patient_data[0].Died, table_patient_diagnosis);
+    addRow("Died", died, table_patient_diagnosis);
 
+    let model_data = json_data.model_detail[patient_data[0].Hadm_id][0];
+    if (model_data.len_hadm_id_result === 0) {
+        console.log("model_data result: ", model_data.len_hadm_id_result);
+    } else {
+        addRow("Prediction", `${cutTo2(json_data.model_detail[patient_data[0].Hadm_id][0].prediction.XGBoost)}%`, table_patient_diagnosis);
+        addRow("Prediction after 90 days", `${cutTo2(json_data.model_detail[patient_data[0].Hadm_id][0].prediction.XGBoost_90_days)}%`, table_patient_diagnosis);
+        addRow("Prediction after 180 days", `${cutTo2(json_data.model_detail[patient_data[0].Hadm_id][0].prediction.XGBoost_180_days)}%`, table_patient_diagnosis);
+
+
+        // model table
+        const section_model_prediction = document.createElement('div');
+        section_model_prediction.classList.add('section_model_prediction');
+        section_model_prediction.setAttribute('id', 'section_model_prediction');
+        patient_container.appendChild(section_model_prediction);
+
+        const model_header = document.createElement('div');
+        model_header.style.backgroundColor = "white";
+        section_model_prediction.appendChild(model_header);
+
+        const model_header_h3 = document.createElement('h3');
+        model_header_h3.textContent = "Prediction";
+        model_header.appendChild(model_header_h3);
+
+        const model_header_h7 = document.createElement('h7');
+        model_header_h7.textContent = "Actual Prediction";
+        model_header_h7.style.color = "grey";
+        model_header.appendChild(model_header_h7);
+
+        model_header.appendChild(separator);
+
+        const model_explainability = document.createElement('div');
+        model_explainability.style.display = "flex";
+        model_explainability.style.flexDirection = "row";
+        section_model_prediction.appendChild(model_explainability);
+
+        const model_xgboost = document.createElement('div');
+        model_xgboost.setAttribute('id', `shap_${patient_data[0].Hadm_id}_XGBoost`)
+        model_xgboost.style.display = "inline";
+        model_explainability.appendChild(model_xgboost);
+
+        const xgboost_header = document.createElement('div');
+        xgboost_header.style.display = "flex";
+        xgboost_header.style.flexDirection = "column";
+        xgboost_header.style.marginRight = "20px";
+        model_xgboost.appendChild(xgboost_header);
+
+        const xgboost_header_h7 = document.createElement('h7');
+        xgboost_header_h7.textContent = "Top 10 Clinical Variable with the hightest Inpact on the Actual Prediction"
+        xgboost_header.appendChild(xgboost_header_h7);
+
+        const table_xgboost = document.createElement('table');
+        table_xgboost.style.border = "none";
+        table_xgboost.style.marginTop = "8px";
+        xgboost_header.appendChild(table_xgboost);
+
+        const xgboost_feature = model_data.frontend_data;
+        table_explainability(table_xgboost, xgboost_feature.XGBoost.feature_name, xgboost_feature.XGBoost.feature_value);
+
+
+        addRow("Prediction", `${cutTo2(model_data.frontend_data.XGBoost)}%`, table_xgboost);
+
+
+        const model_xgboost_90days = document.createElement('div');
+        model_xgboost_90days.setAttribute('id', `shap_${patient_data[0].Hadm_id}_XGBoost_90_days_`)
+        model_xgboost_90days.style.display = "inline";
+        model_explainability.appendChild(model_xgboost_90days);
+
+
+        const xgboost_90_header = document.createElement('div');
+        xgboost_90_header.style.display = "flex";
+        xgboost_90_header.style.flexDirection = "column";
+        xgboost_90_header.style.marginRight = "20px";
+        model_xgboost_90days.appendChild(xgboost_90_header);
+
+        const xgboost_90_header_h7 = document.createElement('h7');
+        xgboost_90_header_h7.textContent = "Top 10 Clinical Variable with the Highest Impact on the 90-Day Prediction";
+        xgboost_90_header.appendChild(xgboost_90_header_h7);
+
+        const table_xgboost_90 = document.createElement('table');
+        table_xgboost_90.style.border = "none";
+        table_xgboost_90.style.marginTop = "8px";
+        xgboost_90_header.appendChild(table_xgboost_90);
+        table_explainability(table_xgboost_90, xgboost_feature.XGBoost_90_days.feature_name, xgboost_feature.XGBoost_90_days.feature_value);
+
+
+        const model_xgboost_180days = document.createElement('div');
+        model_xgboost_180days.setAttribute('id', `shap_${patient_data[0].Hadm_id}_XGBoost_180_days_`)
+        model_xgboost_180days.style.display = "inline";
+        model_explainability.appendChild(model_xgboost_180days);
+
+        const xgboost_180_header = document.createElement('div');
+        xgboost_180_header.style.display = "flex";
+        xgboost_180_header.style.flexDirection = "column";
+        xgboost_180_header.style.marginRight = "20px";
+        model_xgboost_100days.appendChild(xgboost_180_header);
+
+        const xgboost_180_header_h7 = document.createElement('h7');
+        xgboost_180_header_h7.textContent = "Top 10 Clinical Variable with the Highest Impact on the 90-Day Prediction";
+        xgboost_180_header.appendChild(xgboost_180_header_h7);
+
+        const table_xgboost_180 = document.createElement('table');
+        table_xgboost_180.style.border = "none";
+        table_xgboost_180.style.marginTop = "8px";
+        xgboost_180_header.appendChild(table_xgboost_180);
+        table_explainability(table_xgboost_180, xgboost_feature.XGBoost_180_days.feature_name, xgboost_feature.XGBoost_180_days.feature_value);
+
+
+    }
 
 
     // content about model for the prediction
@@ -1718,6 +1560,7 @@ function load_hadm_data(json_data) {
             div_plot_model.appendChild(div_table_contributor);
             return div_plot_model;
         }
+
         const div_plot_model = table_contributor("Actual", patient_data[0].Hadm_id, "XGBoost");
         const div_plot_model_90 = table_contributor("90-Day", patient_data[0].Hadm_id, "XGBoost_90_days");
         const div_plot_model_180 = table_contributor("180-Day", patient_data[0].Hadm_id, "XGBoost_180_days");
@@ -1733,6 +1576,10 @@ function load_hadm_data(json_data) {
 
     }
 }
+
+
+
+
 document.getElementById('myDropdown').addEventListener("change", function () {
     const selectedValue = this.value;
     const selectedText = this.options[this.selectedIndex].text;
@@ -1750,16 +1597,76 @@ document.getElementById('myDropdown').addEventListener("change", function () {
     $.ajax({
         type: "GET", url: window.location.href + "datamanagement/load_hadm_data/", data: {
 
-            subject_id: subject_id,
-            hadm_id: hadm_id,
-            csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
-        }, dataType: "json",
-        success: function (json_response) {
+            subject_id: subject_id, hadm_id: hadm_id, csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+        }, dataType: "json", success: function (json_response) {
             console.log("datamanagement/load_hadm_data/ ", json_response);
-            const patient_data  = JSON.parse(json_response.data);
+            const patient_data = JSON.parse(json_response.data);
             load_hadm_data(json_response);
 
         }
     });
 
 });
+
+
+// load json for higher and lower measurement for feature extraction computation
+document.addEventListener("DOMContentLoaded", function () {
+
+});
+
+function load_measurement() {
+
+}
+
+async function load_measurement() {
+    console.log("load measurement ... ");
+    try {
+        const response = await fetch("/datamanagement/feature_extraction/", {
+            method: "GET", headers: {"X-Requested-With": "XMLHttpRequest"}
+        });
+        const data = await response.json();
+        console.log(data);
+
+        document.getElementById("measurement").textContent = JSON.stringify(data.higher_measurement, null, 2);
+
+        // highlight code block
+        hljs.highlightElement(document.getElementById("measurement"));
+
+
+        render_measurement(data);
+    } catch (error) {
+        console.error("Error loading measurment:", error);
+    }
+}
+
+function render_measurement(data_measurment) {
+    console.log("measurment .....")
+}
+
+// submit load feature extraction
+$("#compute_feature").on("click", function (e) {
+    e.preventDefault();
+    $.ajaxSetup({
+        headers: {
+            'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
+        }
+    });
+    $.ajax({
+        type: "POST", url: window.location.href + "datamanagement/feature_extraction/", data: {
+
+            //subject_id: $("input[name=input_subject_id]").val(),
+            csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+        }, dataType: "json", success: function (data) {
+
+            console.log(data);
+            document.getElementById("computed_feature").textContent = JSON.stringify(data, null, 2);
+            hljs.highlightElement(document.getElementById("computed_feature"))
+
+        }, error: function (data) {
+            console.log(data);
+        }
+    });
+
+});
+
+

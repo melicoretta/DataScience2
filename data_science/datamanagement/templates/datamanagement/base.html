@@ -44,8 +44,80 @@
 
     <title>Data Science</title>
     <link rel="shortcut icon" type="image/png" sizes="192x192" href="{% static 'imgs/logos/tu_logo.png' %}">
-
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     <style>
+
+        .hljs-key {
+            color: #ffcc00 !important;
+        }
+
+        .hljs-string {
+            color: #1a7f37 !important;
+        }
+
+        .hljs-number {
+            color: #22a6b3;
+        }
+
+        .hljs-boolean {
+            color: #eb4d4b !important;
+        }
+        .hljs-attr   { color: #d95e07 !important; }
+        .hljs-string { color: #0eb03d !important; }
+        .hljs-number { color: #ff3333 !important; }
+        .hljs-boolean { color: #0d6efd; !important; }
+        .hljs-null {
+            color: #b04900 !important;
+        }
+                /* Base container */
+        .hljs {
+            /*background: #ffffff;      white background */
+            color: #333333;           /* default text */
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        /* JSON key */
+        .hljs-attr {
+            color: #d12f2f;           /* red */
+        }
+
+        /* Strings */
+        .hljs-string {
+            color: #1a7f37;           /* green */
+        }
+
+
+
+        /* Boolean (true/false) */
+        .hljs-literal {
+            color: #b35ddf;           /* purple */
+        }
+
+        /* null */
+        .hljs-literal.hljs-null,
+        .hljs-null {
+            color: #999999;           /* gray */
+        }
+
+        /* Braces, brackets, punctuation */
+        .hljs-punctuation {
+            color: #FFFFFF;
+        }
+
+        /* Comments */
+        .hljs-comment {
+            color: #8e8e8e;
+            font-style: italic;
+        }
+
+        /* Keywords (if you highlight JS, Python, etc.) */
+        .hljs-keyword {
+            color: #0d6efd;/*#d63384;            pink */
+            font-weight: bold;
+        }
 
     </style>
     <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
@@ -62,21 +134,7 @@
     <div class="container_sidebar">
         <h2 class="element_title"> Input features</h2>
 
-        <!--
-        <div class="autocomplete-wrapper">
-            <p class="item_sidebar"> Subject ID</p>
-            <input id="input_subject_id" type="search" class="form-control input_element" name="subject_id"
-                   placeholder="Search" value=""></div>
-        <ul class="autocomplete-list">
-            <li>
-                <button> aaaa</button>
-            </li>
-            <li>
-                <button> bbbbb</button>
-            </li>
-        </ul>
-    </div>
-    -->
+
         <form id="form_subject_id" name="form_subject_id" action=".">
             {% csrf_token %}
             <div class="autocomplete-container">
@@ -104,367 +162,10 @@
                         style=""
                 >
 
-
-            </div>
-
-        </form>
-        <form id="form_subject_id" name="form_subject_id" action="." method="POST">
-            {% csrf_token %}
-            <div class="submit_button inline_element">
-                <!-- Autocomplete results -->
-            </div>
-            <!--
-                        <div class="slider-container">
-                            <label for="range">Value: <span id="value">50</span></label>
-                            <input type="range" id="range" min="0" max="100" value="50">
-                        </div>
-                          new slider bar -->
-            <br>
-            <!--
-            <div class="autocomplete-container element_diagnosis">
-
-                <label class="autocomplete-label" for="input_subject_id">Diagnosis</label>
-                <input
-                        type="text"
-                        id="input_diagnosis_id"
-                        class="autocomplete-input element_diagnosis"
-                        name="diagnosis"
-                        value=""
-                        placeholder="search diagnosis.."
-                        autocomplete="off"
-                />
-
-                /* Autocomplete results */
-                <ul id="list_diagnosis_id" class="autocomplete-list"></ul>
-            </div>
-
-            <br> -->
-            <div class="autocomplete-container element_diagnosis">
-
-                <label class="autocomplete-label" for="input_subject_id">new Subject_id</label>
-                <input
-                        type="text"
-                        id="input_new_patient_id"
-                        class="autocomplete-input element_diagnosis"
-                        name="new_patient_id"
-                        value=""
-                        placeholder="search new patient..."
-                        autocomplete="off"
-                />
-
-                <!-- Autocomplete results -->
-                <ul id="list_new_patient_id" class="autocomplete-list"></ul>
-            </div>
-
-            <br>
-
-            <div class="feature_element" style="margin-left: 5px;">
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">Age</label>
-
-                    <input id="slider_Age" style="accent-color: #2ecc71" class="input_range" name="Age" type="range"
-                           min="18" max="90" value="54"
-                           step="1">
-                    <div id="tooltip_Age" style="left: 50%;">54</div>
-                </div>
-                <br>
-
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">GCS_max</label>
-
-                    <input id="slider_GCS_max" name="GCS_max" class="input_range" type="range" min="1.0" max="6.0"
-                           value="3.5" step="0.1">
-                    <div id="tooltip_GCS_max" style="left: 50%;">3.5</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">GCS_mean</label>
-
-                    <input id="slider_GCS_mean" name="GCS_mean" class="input_range" type="range" min="1.0" max="6.0"
-                           value="3.5" step="0.1">
-                    <div id="tooltip_GCS_mean" style="left: 50%;">3.5</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">Lactate_min</label>
-
-                    <input id="slider_Lactate_min" name="Lactate_min" class="input_range" type="range" min="0.0"
-                           max="21.2" value="10.6" step="0.1">
-                    <div id="tooltip_Lactate_min" style="left: 50%;">10.6</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">Lactate_max</label>
-
-                    <input id="slider_Lactate_max" name="Lactate_max" class="input_range" type="range" min="0.3"
-                           max="32.0" value="15.85" step="0.01">
-                    <div id="tooltip_Lactate_max" style="left: 50%;">15.85</div>
-                </div>
-                <br>
-
-
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">Lactate_mean</label>
-
-                    <input id="slider_Lactate_mean" name="Lactate_mean" class="input_range" type="range" min="0.3"
-                           max="24.92" value="12.31" step="0.01">
-                    <div id="tooltip_Lactate_mean" style="left: 50%;">12.31</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">BUN_min</label>
-
-                    <input id="slider_BUN_min" name="BUN_min" class="input_range" type="range" min="0.0" max="196.0"
-                           value="98.0" step="0.01">
-                    <div id="tooltip_BUN_min" style="left: 50%;">98.0</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">BUN_mean</label>
-
-                    <input id="slider_BUN_mean" name="BUN_mean" class="input_range" type="range" min="1.28" max="216.5"
-                           value="107.61" step="0.01">
-                    <div id="tooltip_BUN_mean" style="left: 50%;">107.61</div>
-                </div>
-                <br>
-
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">Bilirubin_max</label>
-
-                    <input id="slider_Bilirubin_max" name="Bilirubin_max" class="input_range" type="range" min="0.0"
-                           max="79.0" value="39.5" step="0.01">
-                    <div id="tooltip_Bilirubin_max" style="left: 50%;">39.5</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">Bilirubin_mean</label>
-
-                    <input id="slider_Bilirubin_mean" name="Bilirubin_mean" class="input_range" type="range" min="0.0"
-                           max="68.66" value="34.33" step="0.01">
-                    <div id="tooltip_Bilirubin_mean" style="left: 50%;">34.33</div>
-                </div>
-                <br>
-
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">AG_MEAN</label>
-
-                    <input id="slider_AG_MEAN" name="AG_MEAN" class="input_range" type="range" min="5.5" max="43.0"
-                           value="24.25" step="0.01">
-                    <div id="tooltip_AG_MEAN" style="left: 50%;">24.25</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">AG_MAX</label>
-
-                    <input id="slider_AG_MAX" name="AG_MAX" class="input_range" type="range" min="6.0" max="50.0"
-                           value="28.0" step="0.01">
-                    <div id="tooltip_AG_MAX" style="left: 50%;">28.0</div>
-                </div>
-                <br>
-
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">AG_MIN</label>
-
-                    <input id="slider_AG_MIN" name="AG_MIN" class="input_range" type="range" min="5.0" max="35.0"
-                           value="20.00" step="0.01">
-                    <div id="tooltip_AG_MIN" style="left: 50%;">20.00</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">AG_STD</label>
-
-                    <input id="slider_AG_STD" name="AG_STD" class="input_range" type="range" min="0.0" max="17.03"
-                           value="8.515" step="0.01">
-                    <div id="tooltip_AG_STD" style="left: 50%;">8.515</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">SYSBP_MIN</label>
-
-                    <input id="slider_SYSBP_MIN" name="SYSBP_MIN" class="input_range" type="range" min="0.05"
-                           max="154.0" value="76.975" step="0.001">
-                    <div id="tooltip_SYSBP_MIN" style="left: 50%;">76.975</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">SYSBP_MEAN</label>
-
-                    <input id="slider_SYSBP_MEAN" name="SYSBP_MEAN" class="input_range" type="range" min="29.16"
-                           max="185.47" value="107.315" step="0.01">
-                    <div id="tooltip_SYSBP_MEAN" style="left: 50%;">107.315</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">SYSBP_STD</label>
-
-                    <input id="slider_SYSBP_STD" name="SYSBP_STD" class="input_range" type="range" min="3.51"
-                           max="51.85" value="27.68" step="0.01">
-                    <div id="tooltip_SYSBP_STD" style="left: 50%;">27.68</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">DIASBP_MIN</label>
-
-                    <input id="slider_DIASBP_MIN" name="DIASBP_MIN" class="input_range" type="range" min="0.31"
-                           max="84.0" value="41.84" step="0.01">
-                    <div id="tooltip_DIASBP_MIN" style="left: 50%;">42.00</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">DIASBP_MEAN</label>
-
-                    <input id="slider_DIASBP_MEAN" name="DIASBP_MEAN" class="input_range" type="range" min="14.5"
-                           max="109.92" value="62.21" step="0.01">
-                    <div id="tooltip_DIASBP_MEAN" style="left: 50%;">62.21</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">RR_MEAN</label>
-
-                    <input id="slider_RR_MEAN" name="RR_MEAN" class="input_range" type="range" min="8.32" max="42.80"
-                           value="25.56" step="0.01">
-                    <div id="tooltip_RR_MEAN" style="left: 50%;">25.56</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">RR_MAX</label>
-
-                    <input id="slider_RR_MAX" name="RR_MAX" class="input_range" type="range" min="12.00" max="59.00"
-                           value="35.50" step="0.01">
-                    <div id="tooltip_RR_MAX" style="left: 50%;">35.50</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">RR_MIN</label>
-
-                    <input id="slider_RR_MIN" name="RR_MIN" class="input_range" type="range" min="6.00" max="36.00"
-                           value="21.00" step="0.01">
-                    <div id="tooltip_RR_MIN" style="left: 50%;">21.00</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">TEMP_STD</label>
-
-                    <input id="slider_TEMP_STD" name="TEMP_STD" class="input_range" type="range" min="0.0" max="3.00"
-                           value="1.50" step="0.01">
-                    <div id="tooltip_TEMP_STD" style="left: 50%;">1.50</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">TEMP_MIN</label>
-
-                    <input id="slider_TEMP_MIN" name="TEMP_MIN" class="input_range" type="range" min="25.20" max="40.10"
-                           value="32.65" step="0.01">
-                    <div id="tooltip_TEMP_MIN" style="left: 50%;">32.65</div>
-                </div>
-
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">HR_MEAN</label>
-
-                    <input id="slider_HR_MEAN" name="HR_MEAN" class="input_range" type="range" min="35.93" max="153.44"
-                           value="94.685" step="0.01">
-                    <div id="tooltip_HR_MEAN" style="left: 50%;">94.685</div>
-                </div>
-                <br>
-
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">HR_MAX</label>
-
-                    <input id="slider_HR_MAX" name="HR_MAX" class="input_range" type="range" min="53.0" max="245.0"
-                           value="149.00" step="0.01">
-                    <div id="tooltip_HR_MAX" style="left: 50%;">149.00</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">HR_STD</label>
-
-                    <input id="slider_HR_STD" name="HR_STD" class="input_range" type="range" min="0.00" max="44.60"
-                           value="22.30" step="0.01">
-                    <div id="tooltip_HR_STD" style="left: 50%;">22.30</div>
-                </div>
-                <br>
-
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">RDW_max</label>
-
-                    <input id="slider_RDW_max" name="RDW_max" class="input_range" type="range" min="11.50" max="31.60"
-                           value="21.55" step="0.01">
-                    <div id="tooltip_RDW_max" style="left: 50%;">21.55</div>
-                </div>
-                <br>
-
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">RDW_mean</label>
-
-                    <input id="slider_RDW_mean" name="RDW_mean" class="input_range" type="range" min="11.30" max="28.96"
-                           value="20.13" step="0.01">
-                    <div id="tooltip_RDW_mean" style="left: 50%;">20.13</div>
-                </div>
-                <br>
-
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">RDW_min</label>
-
-                    <input id="slider_RDW_min" name="RDW_min" class="input_range" type="range" min="11.1" max="28.50"
-                           value="19.80" step="0.01">
-                    <div id="tooltip_RDW_min" style="left: 50%;">19.80</div>
-                </div>
-                <br>
-
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">RDW_std</label>
-
-                    <input id="slider_RDW_std" name="RDW_std" class="input_range" type="range" min="0.00" max="5.15"
-                           value="2.57" step="0.01">
-                    <div id="tooltip_RDW_std" style="left: 50%;">2.57</div>
-                </div>
-                <br>
-
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">age_adj_comorbidity_score</label>
-
-                    <input id="slider_age_adj_comorbidity_score" name="age_adj_comorbidity_score" class="input_range"
-                           type="range" min="0.0" max="58.00" value="29.00" step="0.01">
-                    <div id="tooltip_age_adj_comorbidity_score" style="left: 50%;">29.00</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">MEANBP_MIN</label>
-
-                    <input id="slider_MEANBP_MIN" name="MEANBP_MIN" class="input_range" type="range" min="0.20"
-                           max="107.33"
-                           value="53.765" step="0.01">
-                    <div id="tooltip_MEANBP_MIN" style="left: 50%;">53.765</div>
-                </div>
-                <br>
-                <div class="range-tooltip">
-                    <label class="autocomplete-label" for="">MEANBP_MEAN</label>
-
-                    <input id="slider_MEANBP_MEAN" name="MEANBP_MEAN" class="input_range" type="range" min="17.42"
-                           max="130.018"
-                           value="73.719" step="0.01">
-                    <div id="tooltip_MEANBP_MEAN" style="left: 50%;">73.719</div>
-                </div>
-                <br>
-
-                <input
-                        type="button"
-                        id="feature_list"
-                        class="button_feature_element"
-                        name="feature_list"
-                        value="Submit Feature"
-                        autocomplete="off"
-                        style="width: 200px; margin-top: 3px; ">
-
-                <br>
             </div>
 
         </form>
 
-    </div>
-
-    </form>
 
 </div>
 </div>
@@ -476,17 +177,69 @@
     <br>
     <div class="stTabs">
         <div class="stTabs-header">
-            <button class="stTabs-button is-active" data-tab="tab-1"> 📈 Medical Records</button>
-            <button class="stTabs-button" data-tab="tab-2"> 🧠 Model and Explainability</button>
-            <button class="stTabs-button" data-tab="tab-3"> 🏥 Patient list</button>
-            <button class="stTabs-button" data-tab="tab-4"> 📝 About the Model</button>
+
+            <button class="stTabs-button is-active" data-tab="tab-1"> 🧩 Feature Extraction</button>
+            <button class="stTabs-button " data-tab="tab-2"> 📈 Medical Records</button>
+            <button class="stTabs-button" data-tab="tab-3"> 🧠 Model and Explainability</button>
+            <button class="stTabs-button" data-tab="tab-4"> 🏥 Patient list</button>
+            <button class="stTabs-button" data-tab="tab-5"> 📝 About the Model</button>
         </div>
         <div class="stTabs-body">
             <div id="tab-1" class="stTabs-panel is-active">
+             <a href="{% url 'datamanagement:upload_data' %}">
+                <button id="upload_feature" type="submit"
+                            style="border-radius: 5px;">
+                        Upload Feature
+                </button></a>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div style="display: flex; flex-direction: row;">
+                        <div class="load_element" style="display: flex; flex-direction: column;">
+
+                            <div class="element_load_1"><label style="color: grey">Upload Patient Measurements
+                                </label></div>
+                            <div class="element_load_1"><pre id="measurement" type="text" name="measurement_json"
+                                                             accept=".json" style="height: 350px; width: 400px; border-radius: 5px;
+                    border-color: #ccc; border: solid 1px;">{{ measurement }}</pre>
+                            </div>
+                        </div>
+
+
+                        <div class="load_element" style="display: flex; flex-direction: column; margin-left: 10px;">
+                            <div class="element_load_3"><label style="color: grey">Computed Feature
+                                Measurements:</label></div>
+                            <div class="element_load_3"><pre id="computed_feature" type="text" name="json_file_3"
+                                                             accept=".json" style="height: 350px; width: 400px; border-radius: 5px;
+                    border-color: #ccc; border: solid 1px;"></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="compute_feature" type="submit"
+                            style="border-radius: 5px;">
+                        Compute Feature
+                    </button>
+                </form>
+                <div id="container_prediction"></div>
+                <p>Model explainability content here…</p>
+                <div id="container_prediction_radio"></div>
+                <div id="container_explainability"></div>
+                <div id="shapPlot" style="width:80%;height:600px;"></div>
+                {% if data1 %}
+                    <h3>JSON File 1 Content</h3>
+                    <pre>{{ data1|safe }}</pre>
+                {% endif %} {% if data2 %}
+                <h3>JSON File 2 Content</h3>
+                <pre>{{ data2|safe }}</pre>
+            {% endif %}
+
+            </div>
+
+            <div id="tab-2" class="stTabs-panel ">
                 <!-- Content of "Risk Prediction" -->
 
                 <div id="tableContainer">
-                <select id="myDropdown" hidden></select>
+                    <select id="myDropdown" hidden></select>
 
                 </div>
                 <br>
@@ -521,41 +274,41 @@
 
 
             </div>
-            <div id="tab-2" class="stTabs-panel">
+            <div id="tab-3" class="stTabs-panel">
                 <!-- Content of "Model Explainability" -->
                 <div id="container_prediction"></div>
-                <p>Model explainability content here…</p>
+
                 <div id="container_prediction_radio"></div>
                 <div id="container_explainability"></div>
                 <div id="shapPlot" style="width:80%;height:600px;"></div>
             </div>
 
-            <div id="tab-3" class="stTabs-panel" >
+            <div id="tab-4" class="stTabs-panel">
                 <!-- Content of "About the Model" -->
 
                 <div style="display: flex; flex-direction: row;">
 
 
-                <div class="table-scroll" id="patient_list">
+                    <div class="table-scroll" id="patient_list">
 
-                <table id="table_patient" class="patient-table" style="display: inline">
-                    <tr>
-                        <th></th>
-                        <th>Subject_id</th>
-                        <th>Hadm_id</th>
-                        <th>Age</th>
-                        <th>Actual Prediction</th>
-                        <th>90-Days</th>
-                        <th>180-Days</th>
-                    </tr>
-                </table>
+                        <table id="table_patient" class="patient-table" style="display: inline">
+                            <tr>
+                                <th></th>
+                                <th>Subject_id</th>
+                                <th>Hadm_id</th>
+                                <th>Age</th>
+                                <th>Actual Prediction</th>
+                                <th>90-Days</th>
+                                <th>180-Days</th>
+                            </tr>
+                        </table>
 
                     </div>
-                    <div id="div_contributor" class="contributor"><p id="contributor_subject_id"></p> </div>
-            </div>
+                    <div id="div_contributor" class="contributor"><p id="contributor_subject_id"></p></div>
+                </div>
             </div>
 
-            <div id="tab-4" class="stTabs-panel">
+            <div id="tab-5" class="stTabs-panel">
                 <!-- Content of "About the Model" -->
                 <p>About the model content here…</p>
             </div>
@@ -597,7 +350,7 @@
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>

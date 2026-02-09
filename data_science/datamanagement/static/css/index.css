@@ -1186,3 +1186,31 @@ body a {
 .table-scroll, .contributor{
     display: inline;
 }
+
+/* element for feature extraction */
+.load_element{
+    display: flex;
+    flex-direction: column;
+}
+.element_load_1, .element_load_2 {
+    flex-direction: column;
+}
+
+#upload_feature, #compute_feature {
+    width: 170px;
+    height: 25px;
+    font-size: 14px;
+    color: #FFFFFF;
+    background-color: rgb(246, 51, 102);
+    /* padding-bottom: 2px; */
+    display: block;
+    /* width: 100%; */
+    /* height: calc(2.25rem + 2px); */
+    /* padding: .375rem .75rem; */
+    /* font-size: 1rem; */
+    line-height: 1.5;
+    background-clip: padding-box;
+    border: none;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
